@@ -1,0 +1,123 @@
+name: rdl
+version: 0.1.0
+author: Illumination Research
+about: Renders or filters NSI streams or Lua NSI files
+help_message: Print this help message.
+version_message: Print version information.
+after_help: "Note: ‘rdl -h’ prints a short and concise overview while ‘rdl --help’\ngives all details."
+global_settings:
+    - ColoredHelp
+    - DeriveDisplayOrder
+    - UnifiedHelpMessage
+    - ArgsNegateSubcommands
+    - ArgRequiredElseHelp
+    - AllowExternalSubcommands
+    - DisableHelpSubcommand
+    - VersionlessSubcommands
+args:
+    - CONFIG:
+        short: c
+        long: config
+        required: false
+        index: 1
+subcommands:
+    - render:
+        about: Render an image of result with 3Delight.
+        help_message: Print this/a long help message.
+        args:
+            - cloud:
+                long: cloud
+                required: false
+                help: Use 3Delight Cloud to render the specified files.
+            - display:
+                short: d
+                long: display
+                required: false
+                help: Send 3Delight Display (a copy of) all rendered images.
+            - verbose:
+                short: v
+                long: verbose
+                required: false
+                help: Print the names of the files being rendered.
+            - progress:
+                short: p
+                long: progress
+                required: false
+                help: Print rendering progress at each bucket.
+            - quiet:
+                short: q
+                long: quiet
+                required: false
+                help: Do not print the name of the file being rendered.
+            - stats:
+                long: embed-statistics
+                help: Embed statistics in rendered images.
+                required: false
+            - FRAME:
+                short: f
+                long: frame
+                required: false
+                takes_value: true
+                help: FRAME(s) to render – 1,2,10-20,40-30@2.
+                long_help:
+                   "FRAME(s) to render.\n\
+                    They can be specified individually:\n\
+                    1,2​,3,5,8,13\n\
+                    Or as a squence:\n\
+                    10-15   ⟶   10, 11, 12, 13, 14, 15\n\
+                    With an optional step size:\n\
+                    10-20@2 ⟶   10, 12, 14, 16, 18, 20\n\
+                    Step size is always positive.\n\
+                    To render a sequence backwards specify the range\n\
+                    in reverse:\n\
+                    42-37   ⟶   42, 41, 40, 39, 38, 37\n\
+                    The last frame of a sequence will be omitted if\n\
+                    the specified step size does not touch it:\n\
+                    80-70@4 ⟶   80, 76, 72\n\
+                    \n\n"
+            - FILE:
+                required: true
+                multiple: true
+                index: 1
+                help: The NSI FILE(s) to render.
+                long_help:
+                   "The NSI FILE(s) to render.\n\
+                    Frame number placeholders are specified using @[padding]:\n\
+                    foo.@4.nsi ⟶   foo.0001.nsi, foo.0002.nsi, …\n\
+                    \n\n"
+    - cat:
+        about: Dump the input to stdout as an NSI stream.
+        help_message: Print this help message.
+        args:
+            - binary:
+                short: b
+                long: binary
+                required: false
+                help: Encode NSI stream in binary format.
+            - gzip:
+                short: g
+                long: gzip
+                required: false
+                help: Compress NSI stream using Gzip format.
+            - expand:
+                short: e
+                long: expand
+                required: false
+                help: Expand archives and procedurals.
+            - expand_archives:
+                long: expand-archives
+                required: false
+                help: Expand archives only.
+            - expand_procedurals:
+                long: expand-procedurals
+                required: false
+                help: Expand procedurals only.
+            - FILE:
+                required: true
+                help: The NSI FILE(s) to dump.
+            - OUTPUT:
+                short: o
+                long: output
+                required: false
+                takes_value: true
+                help: Dump NSI stream to OUTPUT instead of stdout.
