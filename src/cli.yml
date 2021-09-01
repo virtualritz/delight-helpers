@@ -1,18 +1,17 @@
 name: rdl
 version: 0.1.0
-author: Illumination Research
 about: Renders or filters NSI streams or Lua NSI files
 help_message: Print this help message.
 version_message: Print version information.
-after_help: "Note: ‘rdl -h’ prints a short and concise overview while ‘rdl --help’\ngives all details."
+after_help: "‘rdl -h’ prints a brief overview while ‘rdl --help’ gives all details."
 global_settings:
     - ColoredHelp
     - DeriveDisplayOrder
     - UnifiedHelpMessage
     - ArgsNegateSubcommands
-    - ArgRequiredElseHelp
     - AllowExternalSubcommands
     - DisableHelpSubcommand
+    - SubcommandRequiredElseHelp
     - VersionlessSubcommands
 args:
     - CONFIG:
@@ -28,27 +27,26 @@ subcommands:
             - cloud:
                 long: cloud
                 required: false
-                help: Use 3Delight Cloud to render the specified files.
+                help: Use 3Delight Cloud to render the specified file(s).
             - display:
                 short: d
                 long: display
                 required: false
-                help: Send 3Delight Display (a copy of) all rendered images.
+                help: Send 3Delight Display (a copy of) the image(s) being rendered.
             - verbose:
                 short: v
                 long: verbose
                 required: false
-                help: Print the names of the files being rendered.
+                help: Print the names of the file(s) being rendered.
             - progress:
                 short: p
                 long: progress
                 required: false
                 help: Print rendering progress at each bucket.
-            - quiet:
-                short: q
-                long: quiet
+            - dry_run:
+                long: dry-run
                 required: false
-                help: Do not print the name of the file being rendered.
+                help: Do not render, just print the name of the file(s) to be rendered.
             - stats:
                 long: embed-statistics
                 help: Embed statistics in rendered images.
@@ -70,7 +68,7 @@ subcommands:
                     Step size is always positive.\n\
                     To render a sequence backwards specify the range\n\
                     in reverse:\n\
-                    42-37   ⟶   42, 41, 40, 39, 38, 37\n\
+                    42-33@3 ⟶   42, 39, 36, 33\n\
                     The last frame of a sequence will be omitted if\n\
                     the specified step size does not touch it:\n\
                     80-70@4 ⟶   80, 76, 72\n\
@@ -83,6 +81,7 @@ subcommands:
                 long_help:
                    "The NSI FILE(s) to render.\n\
                     Frame number placeholders are specified using @[padding]:\n\
+                    foo.@.nsi  ⟶   foo.1.nsi, foo.2.nsi, …\n\
                     foo.@4.nsi ⟶   foo.0001.nsi, foo.0002.nsi, …\n\
                     \n\n"
     - cat:
