@@ -1,6 +1,6 @@
 # `rdl`
 
-3Delight command line client/`renderdl` replacement.
+[3Delight](https://www.3delight.com/) command line client/`renderdl` replacement.
 
 ## Installation
 
@@ -18,22 +18,18 @@ rdl 0.1.0
 Renders or filters NSI streams or Lua NSI files.
 
 USAGE:
-    rdl [CONFIG]
+    rdl
     rdl <SUBCOMMAND>
 
 OPTIONS:
     -h, --help       Print this help message.
     -V, --version    Print version information.
 
-ARGS:
-    <CONFIG>
-
 SUBCOMMANDS:
     render    Render an image of result with 3Delight.
-    cat       Dump the input to stdout as an NSI stream.
+    cat       Dump the input as an NSI stream to stdout/a file.
 
-Note: ‘rdl -h’ prints a short and concise overview while ‘rdl --help’
-gives all details.
+‘rdl -h’ prints a brief overview while ‘rdl --help’ gives all details.
 ```
 
 ### `render` Subcommand
