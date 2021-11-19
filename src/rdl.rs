@@ -75,7 +75,7 @@ fn nsi_render(ctx: &nsi::Context, file_name: &str) {
 fn render(args: &clap::ArgMatches) -> Result<()> {
 
     let frame_sequence =
-        if let Some(frame_sequence_string) = args.value_of("FRAME") {
+        if let Some(frame_sequence_string) = args.value_of("FRAMES") {
             parse_frame_sequence(frame_sequence_string)?
         } else {
             vec![]
