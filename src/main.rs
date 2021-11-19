@@ -1,6 +1,6 @@
 use clap::{load_yaml, App};
 use std::path::Path;
-use color_eyre::eyre::{eyre, Result};
+use eyre::{eyre, Result};
 
 #[macro_use]
 extern crate pest_derive;
@@ -12,8 +12,6 @@ use frame_sequence_parser::*;
 const VERSION: &str = env!("CARGO_PKG_VERSION");
 
 fn main() -> Result<()> {
-    color_eyre::install()?;
-
     run()
 }
 
@@ -49,14 +47,13 @@ fn run() -> Result<()> {
             Ok(())
         }
         ("render", Some(render_args)) => {
-            //config.nsi_render.output.display = render_args.is_present("display");
             render(render_args)
         }
         ("cat", Some(cat_args)) => {
             cat(cat_args)
         }
         _ => Err(eyre!(
-            "Unknown/missing subcommand. Please specify one of 'render', 'cat' or none for help."
+            "Unknown/missing subcommand. Please specify one of 'render', 'cat' or --help"
         )),
     }
 }
@@ -75,17 +72,18 @@ fn nsi_render(ctx: &nsi::Context, file_name: &str) {
     ]);
 }
 
-fn render(render_args: &clap::ArgMatches) -> Result<()> {
+fn render(args: &clap::ArgMatches) -> Result<()> {
+
     let frame_sequence =
-        if let Some(frame_sequence_string) = render_args.value_of("FRAME") {
+        if let Some(frame_sequence_string) = args.value_of("FRAME") {
             parse_frame_sequence(frame_sequence_string)?
         } else {
             vec![]
         };
 
-    match render_args.value_of("FILE") {
+    match args.value_of("FILE") {
         Some(file_name) => {
-            let ctx = if render_args.is_present("cloud") {
+            let ctx = if args.is_present("cloud") {
                 nsi::Context::new(&[nsi::integer!("cloud", true as _)])
             } else {
                 nsi::Context::new(&[])
@@ -94,7 +92,7 @@ fn render(render_args: &clap::ArgMatches) -> Result<()> {
 
             if let Some(pos) = file_name.find('@') {
                 if frame_sequence.is_empty() {
-                    return Ok(()); //"[rdl] No frame sequence specified.");
+                    return Err(eyre!("[rdl] No frame sequence to fill placeholder `@` in `{}` specified.", file_name));
                 }
 
                 let padding = if let Some(number) = file_name.get(pos + 1..pos + 2) {
@@ -109,6 +107,7 @@ fn render(render_args: &clap::ArgMatches) -> Result<()> {
                     "@"
                 };
 
+                // Render frame sequence.
                 for frame in frame_sequence {
                     let frame_string = if padding != 0 {
                         format!("{:0width$}", frame, width = padding)
@@ -119,14 +118,26 @@ fn render(render_args: &clap::ArgMatches) -> Result<()> {
                     let frame_file_name =
                         file_name.replace(frame_number_placeholder, &frame_string);
 
-                    nsi_render(&ctx, &frame_file_name);
+                    if args.is_present("verbose") || args.is_present("dry_run") {
+                        println!("[rdl] Rendering `{}`.", frame_file_name);
+                    }
+
+                    if !args.is_present("dry_run") {
+                        nsi_render(&ctx, &frame_file_name);
+                    }
                 }
             } else {
-                nsi_render(&ctx, file_name);
+                if args.is_present("verbose") || args.is_present("dry_run") {
+                    println!("[rdl] Rendering `{}`.", file_name);
+                }
+
+                if !args.is_present("dry_run") {
+                    nsi_render(&ctx, file_name);
+                }
             }
             Ok(())
         }
-        //config.nsi_render.output.file_name = Some(file_name.to_string());
+
         None => Err(eyre!("[rdl] render subcommand requires specifying a file to render")),
     }
 }

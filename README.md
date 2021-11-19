@@ -1,12 +1,21 @@
 # `rdl`
 
-3Delight command line client/renderdl replacement.
+3Delight command line client/`renderdl` replacement.
 
-# Invocation
+## Installation
+
+1. [Install Rust](https://www.rust-lang.org/tools/install).
+
+2. Run:
+   ```
+   cargo install rdl
+   ```
+
+## Invocation
 
 ```
 rdl 0.1.0
-Renders or filters NSI streams or Lua NSI files
+Renders or filters NSI streams or Lua NSI files.
 
 USAGE:
     rdl [CONFIG]
@@ -26,7 +35,8 @@ SUBCOMMANDS:
 Note: ‘rdl -h’ prints a short and concise overview while ‘rdl --help’
 gives all details.
 ```
-## `render` Subcommand
+
+### `render` Subcommand
 
 ```
 rdl-render
@@ -38,25 +48,25 @@ USAGE:
 
 OPTIONS:
         --cloud
-            Use 3Delight Cloud to render the specified files.
+            Use 3Delight Cloud to render the specified file(s).
 
     -d, --display
-            Send 3Delight Display (a copy of) all rendered images.
+            Send 3Delight Display (a copy of) the image(s) being rendered.
+
+    -t, --threads <THREADS>
+            Launch the render using number of THREADS.
 
     -v, --verbose
-            Print the names of the files being rendered.
+            Print the names of the file(s) being rendered.
 
     -p, --progress
             Print rendering progress at each bucket.
 
-    -q, --quiet
-            Do not print the name of the file being rendered.
+        --dry-run
+            Do not render, just print the name of the file(s) to be rendered.
 
-        --embed-statistics
-            Embed statistics in rendered images.
-
-    -f, --frame <FRAME>
-            FRAME(s) to render.
+    -f, --frames <FRAMES>
+            FRAME(S) to render.
             They can be specified individually:
             1,2,3,5,8,13
             Or as a squence:
@@ -64,9 +74,11 @@ OPTIONS:
             With an optional step size:
             10-20@2 ⟶   10, 12, 14, 16, 18, 20
             Step size is always positive.
-            To render a sequence backwards specify the range
-            in reverse:
-            42-37   ⟶   42, 41, 40, 39, 38, 37
+            To render a sequence backwards specify the range in reverse:
+            42-33@3 ⟶   42, 39, 36, 33
+            With binary splitting. Useful to quickly check if a sequence has
+            ‘issues’ in some frames:
+            10-50@b ⟶   10, 50, 30, 20, 40, …
             The last frame of a sequence will be omitted if
             the specified step size does not touch it:
             80-70@4 ⟶   80, 76, 72
@@ -79,10 +91,11 @@ ARGS:
     <FILE>...
             The NSI FILE(s) to render.
             Frame number placeholders are specified using @[padding]:
+            foo.@.nsi  ⟶   foo.1.nsi, foo.2.nsi, …
             foo.@4.nsi ⟶   foo.0001.nsi, foo.0002.nsi, …
 ```
 
-## `cat` Subcommand
+### `cat` Subcommand
 
 ```
 rdl-cat

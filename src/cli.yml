@@ -1,6 +1,6 @@
 name: rdl
 version: 0.1.0
-about: Renders or filters NSI streams or Lua NSI files
+about: Renders or filters NSI streams or Lua NSI files.
 help_message: Print this help message.
 version_message: Print version information.
 after_help: "‘rdl -h’ prints a brief overview while ‘rdl --help’ gives all details."
@@ -11,14 +11,14 @@ global_settings:
     - ArgsNegateSubcommands
     - AllowExternalSubcommands
     - DisableHelpSubcommand
-    - SubcommandRequiredElseHelp
     - VersionlessSubcommands
-args:
-    - CONFIG:
-        short: c
-        long: config
-        required: false
-        index: 1
+    - SubcommandRequiredElseHelp
+#args:
+#    - CONFIG:
+#        short: c
+#        long: config
+#        required: false
+#        index: 1
 subcommands:
     - render:
         about: Render an image of result with 3Delight.
@@ -33,6 +33,13 @@ subcommands:
                 long: display
                 required: false
                 help: Send 3Delight Display (a copy of) the image(s) being rendered.
+            - THREADS:
+                short: t
+                long: threads
+                required: false
+                takes_value: true
+                help: Launch the render using number of THREADS.
+                required: false
             - verbose:
                 short: v
                 long: verbose
@@ -47,18 +54,14 @@ subcommands:
                 long: dry-run
                 required: false
                 help: Do not render, just print the name of the file(s) to be rendered.
-            - stats:
-                long: embed-statistics
-                help: Embed statistics in rendered images.
-                required: false
-            - FRAME:
+            - FRAMES:
                 short: f
-                long: frame
+                long: frames
                 required: false
                 takes_value: true
-                help: FRAME(s) to render – 1,2,10-20,40-30@2.
+                help: FRAME(S) to render – 1,2,10-20,40-30@2.
                 long_help:
-                   "FRAME(s) to render.\n\
+                   "FRAME(S) to render.\n\
                     They can be specified individually:\n\
                     1,2​,3,5,8,13\n\
                     Or as a squence:\n\
@@ -66,9 +69,11 @@ subcommands:
                     With an optional step size:\n\
                     10-20@2 ⟶   10, 12, 14, 16, 18, 20\n\
                     Step size is always positive.\n\
-                    To render a sequence backwards specify the range\n\
-                    in reverse:\n\
+                    To render a sequence backwards specify the range in reverse:\n\
                     42-33@3 ⟶   42, 39, 36, 33\n\
+                    With binary splitting. Useful to quickly check if a sequence has\n\
+                    ‘issues’ in some frames:\n\
+                    10-50@b ⟶   10, 50, 30, 20, 40, …\n\
                     The last frame of a sequence will be omitted if\n\
                     the specified step size does not touch it:\n\
                     80-70@4 ⟶   80, 76, 72\n\
@@ -85,7 +90,7 @@ subcommands:
                     foo.@4.nsi ⟶   foo.0001.nsi, foo.0002.nsi, …\n\
                     \n\n"
     - cat:
-        about: Dump the input to stdout as an NSI stream.
+        about: Dump the input as an NSI stream to stdout/a file.
         help_message: Print this help message.
         args:
             - binary:
