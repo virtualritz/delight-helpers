@@ -1,6 +1,8 @@
-# `rdl`
+# 3`delight-helpers`
 
-[3Delight](https://www.3delight.com/) command line client/`renderdl` replacement.
+[3Delight](https://www.3delight.com/) command line utilities/helpers.
+
+For now just a `renderdl` replacement.
 
 ## Installation
 
@@ -8,10 +10,12 @@
 
 2. Run:
    ```
-   cargo install rdl
+   cargo install delight-helpers
    ```
 
-## Invocation
+## Helpers
+
+### `rdl`
 
 ```
 rdl 0.1.0
@@ -32,7 +36,7 @@ SUBCOMMANDS:
 ‘rdl -h’ prints a brief overview while ‘rdl --help’ gives all details.
 ```
 
-### `render` Subcommand
+#### `render` Subcommand
 
 ```
 rdl-render
@@ -91,7 +95,7 @@ ARGS:
             foo.@4.nsi ⟶   foo.0001.nsi, foo.0002.nsi, …
 ```
 
-### `cat` Subcommand
+#### `cat` Subcommand
 
 ```
 rdl-cat
