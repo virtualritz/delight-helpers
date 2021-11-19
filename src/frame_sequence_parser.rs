@@ -1,21 +1,18 @@
-use itertools::Itertools;
-use std::{cmp::Ordering, collections::HashSet};
 use eyre::{eyre, Result};
+use itertools::Itertools;
 use pest::Parser;
+use std::{cmp::Ordering, collections::HashSet};
 
 #[derive(Parser)]
 #[grammar = "frame_format_grammar.pest"]
 pub struct FrameSequenceParser;
 
 pub fn parse_frame_sequence(input: &str) -> Result<Vec<isize>> {
-
     match FrameSequenceParser::parse(Rule::FrameSequenceString, input) {
-        Ok(token_tree) => {
-            Ok(remove_duplicates(frame_sequence_token_tree_to_frames(token_tree)))
-        }
-        Err(e) => {
-            Err(eyre!("Error in frame sequence expression{}", e))
-        }
+        Ok(token_tree) => Ok(remove_duplicates(frame_sequence_token_tree_to_frames(
+            token_tree,
+        ))),
+        Err(e) => Err(eyre!("Error in frame sequence expression{}", e)),
     }
 }
 
@@ -90,9 +87,10 @@ fn frame_sequence_token_tree_to_frames(pairs: pest::iterators::Pairs<Rule>) -> V
                                     Ordering::Less => {
                                         (left..right + 1).step_by(step as _).collect::<Vec<_>>()
                                     }
-                                    Ordering::Greater => {
-                                        (right..left + 1).rev().step_by(step as _).collect::<Vec<_>>()
-                                    }
+                                    Ordering::Greater => (right..left + 1)
+                                        .rev()
+                                        .step_by(step as _)
+                                        .collect::<Vec<_>>(),
                                     Ordering::Equal => vec![left],
                                 }
                             }

@@ -1,10 +1,9 @@
 use clap::{load_yaml, App};
-use std::path::Path;
 use eyre::{eyre, Result};
+use std::path::Path;
 
 #[macro_use]
 extern crate pest_derive;
-
 
 mod frame_sequence_parser;
 use frame_sequence_parser::*;
@@ -46,12 +45,8 @@ fn run() -> Result<()> {
             println!("rdl version {}", VERSION);
             Ok(())
         }
-        ("render", Some(render_args)) => {
-            render(render_args)
-        }
-        ("cat", Some(cat_args)) => {
-            cat(cat_args)
-        }
+        ("render", Some(render_args)) => render(render_args),
+        ("cat", Some(cat_args)) => cat(cat_args),
         _ => Err(eyre!(
             "Unknown/missing subcommand. Please specify one of 'render', 'cat' or --help"
         )),
@@ -73,13 +68,11 @@ fn nsi_render(ctx: &nsi::Context, file_name: &str) {
 }
 
 fn render(args: &clap::ArgMatches) -> Result<()> {
-
-    let frame_sequence =
-        if let Some(frame_sequence_string) = args.value_of("FRAMES") {
-            parse_frame_sequence(frame_sequence_string)?
-        } else {
-            vec![]
-        };
+    let frame_sequence = if let Some(frame_sequence_string) = args.value_of("FRAMES") {
+        parse_frame_sequence(frame_sequence_string)?
+    } else {
+        vec![]
+    };
 
     match args.value_of("FILE") {
         Some(file_name) => {
@@ -92,7 +85,10 @@ fn render(args: &clap::ArgMatches) -> Result<()> {
 
             if let Some(pos) = file_name.find('@') {
                 if frame_sequence.is_empty() {
-                    return Err(eyre!("[rdl] No frame sequence to fill placeholder `@` in `{}` specified.", file_name));
+                    return Err(eyre!(
+                        "[rdl] No frame sequence to fill placeholder `@` in `{}` specified.",
+                        file_name
+                    ));
                 }
 
                 let padding = if let Some(number) = file_name.get(pos + 1..pos + 2) {
@@ -138,14 +134,14 @@ fn render(args: &clap::ArgMatches) -> Result<()> {
             Ok(())
         }
 
-        None => Err(eyre!("[rdl] render subcommand requires specifying a file to render")),
+        None => Err(eyre!(
+            "[rdl] render subcommand requires specifying a file to render"
+        )),
     }
 }
 
-
 fn cat(cat_args: &clap::ArgMatches) -> Result<()> {
     if let Some(file_name) = cat_args.value_of("FILE") {
-
         let path = Path::new(cat_args.value_of("OUTPUT").unwrap_or("stdout"));
 
         let mut args = vec![nsi::string!("streamfilename", path.to_str().unwrap())];
