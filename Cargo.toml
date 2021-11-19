@@ -1,6 +1,6 @@
 [package]
 name = "delight-helpers"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Moritz Moeller <virtualritz@protonmail.com>"]
 edition = "2021"
 resolver = "2"
@@ -33,7 +33,7 @@ clap = { version = "2.33.3", features = ["yaml", "color"] }
 split-debuginfo = "unpacked"
 
 [profile.release]
-lto = "on"
+lto = true
 opt-level = "z"
 codegen-units = 1
 panic = "abort"
