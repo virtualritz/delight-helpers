@@ -24,7 +24,6 @@ clap = { version = "3.1.0", features = ["derive", "color", "suggestions", "unico
 clap_complete = "3.1.0"
 frame-sequence = "0.1.0"
 human-panic = "1.0.3"
-miette = { version = "4.2.0", features = ["fancy"] }
 nsi = "0.6.0"
 wax = { version = "0.4.0", features = ["diagnostics-report"] }
 

@@ -5,6 +5,7 @@ use clap_complete::{
     shells::{Bash, Elvish, Fish, PowerShell, Zsh},
 };
 use frame_sequence::parse_frame_sequence;
+use human_panic::setup_panic;
 use std::{io, str::FromStr};
 use wax::Glob;
 
@@ -14,6 +15,8 @@ mod rdl_cli;
 use rdl_cli::*;
 
 fn main() -> Result<()> {
+    setup_panic!();
+
     run()
 }
 
