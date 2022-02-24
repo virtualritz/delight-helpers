@@ -19,7 +19,6 @@ pub struct Cli {
 
 #[derive(Subcommand)]
 pub enum Command {
-    #[clap(about = "Display the renderer version")]
     Render(Render),
     Cat(Cat),
     #[clap(

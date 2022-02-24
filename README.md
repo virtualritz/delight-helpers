@@ -18,57 +18,59 @@ For now just a `renderdl` replacement.
 ### `rdl`
 
 ```
-rdl 0.1.0
-Renders or filters NSI streams or Lua NSI files.
+rdl
+Renders or filters NSI streams or Lua NSI files
 
 USAGE:
-    rdl
     rdl <SUBCOMMAND>
 
 OPTIONS:
-    -h, --help       Print this help message.
-    -V, --version    Print version information.
+    -h, --help    Print help information
 
 SUBCOMMANDS:
-    render    Render an image of result with 3Delight.
-    cat       Dump the input as an NSI stream to stdout/a file.
+    cat                     Dump the input as an NSI stream to stdout/a file
+    help                    Print this message or the help of the given subcommand(s)
+    render                  Display the renderer version
+    generate-completions    Generate completion scripts for various shells
 
-‘rdl -h’ prints a brief overview while ‘rdl --help’ gives all details.
+‘rdl -h’ prints a brief overview while ‘rdl --help’ gives all details
 ```
 
 #### `render` Subcommand
 
 ```
 rdl-render
-Render an image of result with 3Delight.
+Render an image of result with 3Delight
 
 USAGE:
-    rdl render [OPTIONS] <FILE>...
-    rdl render <SUBCOMMAND>
+    rdl render [OPTIONS] [FILE]...
+
+ARGS:
+    <FILE>...
+            The NSI FILE(s) to render
+            Frame number placeholders are specified using @[padding]:
+            foo.@.nsi  ⟶   foo.1.nsi, foo.2.nsi, …
+            foo.@4.nsi ⟶   foo.0001.nsi, foo.0002.nsi, …
+
+            Globbing using "<pattern>" (in quotes) is supported -
+            even if your shell has support for it:
+            "**/{*.{nsi,lua}}" ⟶ all .nsi and .lua files in the
+            current folder and its subfolders
 
 OPTIONS:
-        --cloud
-            Use 3Delight Cloud to render the specified file(s).
+    -c, --cloud
+            Use 3Delight Cloud to render the specified file(s)
 
     -d, --display
             Send 3Delight Display (a copy of) the image(s) being
             rendered.
-
-    -t, --threads <THREADS>
-            Launch the render using number of THREADS.
-
-    -v, --verbose
-            Print the names of the file(s) being rendered.
-
-    -p, --progress
-            Print rendering progress at each bucket.
 
         --dry-run
             Do not render, just print the name of the file(s) to be
             rendered.
 
     -f, --frames <FRAMES>
-            FRAME(S) to render.
+            FRAME(S) to render
             They can be specified individually:
             1,2,3,5,8,13
             Or as a squence:
@@ -80,57 +82,64 @@ OPTIONS:
             42-33@3 ⟶   42, 39, 36, 33
             With binary splitting. Useful to quickly check if a sequence
             has ‘issues’ in some frames:
-            10-50@b ⟶   10, 50, 30, 20, 40, …
+            10-20@b ⟶   10, 20, 15, 12, 17, 11, 13, 16, 18, 14, 19
             The last frame of a sequence will be omitted if
             the specified step size does not touch it:
             80-70@4 ⟶   80, 76, 72
 
     -h, --help
-            Print this/a long help message.
+            Print help information
 
+    -p, --progress
+            Print rendering progress at each bucket
 
-ARGS:
-    <FILE>...
-            The NSI FILE(s) to render.
-            Frame number placeholders are specified using @[padding]:
-            foo.@.nsi  ⟶   foo.1.nsi, foo.2.nsi, …
-            foo.@4.nsi ⟶   foo.0001.nsi, foo.0002.nsi, …
+    -t, --threads <THREADS>
+            Launch the render using number of THREADS
+
+    -u, --using <USING>
+            Render using the local machine (default):
+            --using local
+            Render using the cloud:
+            --using cloud
+            Render using the colletive `Molodchy`:
+            --using Molodchy
+
+    -v, --verbose
+            Print the names of the file(s) being rendered
 ```
 
 #### `cat` Subcommand
 
 ```
 rdl-cat
-Dump the input as an NSI stream to stdout/a file.
+Dump the input as an NSI stream to stdout/a file
 
 USAGE:
-    rdl cat [OPTIONS] <FILE>
-    rdl cat <SUBCOMMAND>
-
-OPTIONS:
-    -b, --binary
-            Encode NSI stream in binary format.
-
-    -g, --gzip
-            Compress NSI stream using GNU zip format.
-
-    -e, --expand
-            Expand archives and procedurals.
-
-        --expand-archives
-            Expand archives only.
-
-        --expand-procedurals
-            Expand procedurals only.
-
-    -o, --output <OUTPUT>
-            Dump NSI stream to OUTPUT instead of stdout.
-
-    -h, --help
-            Print this help message.
-
+    rdl cat [OPTIONS] [FILE]
 
 ARGS:
     <FILE>
-            The NSI FILE(s) to dump.
+            The NSI FILE(s) to dump
+
+OPTIONS:
+    -b, --binary
+            Encode NSI stream in binary format
+
+    -e, --expand
+            Expand archives and procedurals
+
+        --expand-archives
+            Expand archives
+
+        --expand-procedurals
+            Expand procedurals
+
+    -g, --gzip
+            Compress NSI stream using GNU zip format
+
+    -h, --help
+            Print help information
+
+    -o, --output <OUTPUT>
+            Dump NSI stream to OUTPUT instead of stdout
 ```
