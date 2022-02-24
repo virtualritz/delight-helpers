@@ -43,24 +43,33 @@ pub enum Command {
 )]
 pub struct Render {
     #[clap(
-        long,
-        short = 'u',
-        conflicts_with = "cloud",
-        help = "Render `locally`, in the `cloud` or in the given collective",
-        long_help = "Render using the local machine (default):\n\
-                --using local\n\
-                Render using the cloud:\n\
-                --using cloud\n\
-                Render using the colletive `Molodchy`:\n\
-                --using Molodchy\n"
+        name = "FILE",
+        index = 1,
+        help = "The NSI FILE(s) to render",
+        long_help = "The NSI FILE(s) to render\n\
+            Frame number placeholders are specified using @[padding]:\n\
+            foo.@.nsi  ⟶   foo.1.nsi, foo.2.nsi, …\n\
+            foo.@4.nsi ⟶   foo.0001.nsi, foo.0002.nsi, …\n\n\
+            Globbing using \"<pattern>\" (in quotes) is supported -\n\
+            even if your shell has no support for it:\n\
+            \"**/{*.{nsi,lua}}\" ⟶   all .nsi and .lua files in the\n\
+                                   current folder and its subfolders\n"
     )]
-    pub using: Option<String>,
+    pub file: Vec<String>,
+
+    #[clap(
+        long,
+        short = 'C',
+        conflicts_with = "cloud",
+        help = "Render using the the given 3Delight COLLECTIVE",
+    )]
+    pub collective: Option<String>,
 
     #[clap(
         long,
         short = 'c',
-        conflicts_with = "using",
-        help = "Use 3Delight Cloud to render the specified file(s)"
+        conflicts_with = "collective",
+        help = "Render using 3Delight Cloud"
     )]
     pub cloud: bool,
 
@@ -120,20 +129,7 @@ pub struct Render {
     //short = 'I'
 
     //ignore_glob <pattern>
-    #[clap(
-        name = "FILE",
-        index = 1,
-        help = "The NSI FILE(s) to render",
-        long_help = "The NSI FILE(s) to render\n\
-            Frame number placeholders are specified using @[padding]:\n\
-            foo.@.nsi  ⟶   foo.1.nsi, foo.2.nsi, …\n\
-            foo.@4.nsi ⟶   foo.0001.nsi, foo.0002.nsi, …\n\n\
-            Globbing using \"<pattern>\" (in quotes) is supported -\n\
-            even if your shell has support for it:\n\
-            \"**/{*.{nsi,lua}}\" ⟶ all .nsi and .lua files in the\n\
-                                   current folder and its subfolders\n"
-    )]
-    pub file: Vec<String>,
+
 }
 
 #[derive(Parser)]

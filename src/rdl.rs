@@ -88,6 +88,7 @@ fn render(render: Render) -> Result<()> {
     };
 
     let cloud = render.cloud;
+
     for maybe_glob in &render.file {
         let glob = Glob::from_str(maybe_glob)?;
 
@@ -96,11 +97,15 @@ fn render(render: Render) -> Result<()> {
             let file_name = file_name.path().to_str().unwrap();
 
             let ctx = {
+                let mut ctx_args = Vec::with_capacity(2);
+
                 if cloud {
-                    nsi::Context::new(&[nsi::integer!("cloud", true as _)])
-                } else {
-                    nsi::Context::new(&[nsi::integer!("cloud", false as _)])
+                    ctx_args.push(nsi::integer!("cloud", true as _));
+                } else if let Some(ref collective) = render.collective {
+                    ctx_args.push(nsi::string!("collective", collective.as_str()));
                 }
+
+                nsi::Context::new(&ctx_args)
             }
             .unwrap();
 

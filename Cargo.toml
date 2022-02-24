@@ -1,18 +1,18 @@
 [package]
 name = "delight-helpers"
-version = "0.1.3"
+version = "0.1.4"
 authors = ["Moritz Moeller <virtualritz@protonmail.com>"]
 edition = "2021"
 resolver = "2"
 keywords = ["graphics", "rendering", "3d", "ray-tracing", "scene-description"]
-categories = ["graphics", "multimedia::images", "rendering"]
+categories = ["command-line-utilities", "graphics", "multimedia::images", "rendering"]
 license = "Apache-2.0 OR BSD-3-Clause OR MIT OR Zlib"
 description = "Command line utilities/helpers for the 3Delight renderer."
 exclude = [".github/**/*", "crates/**/*"]
 readme = "README.md"
 homepage = "https://www.3delight.com/"
-documentation = "https://docs.rs/nsi/"
-repository = "https://github.com/virtualritz/rdl/"
+documentation = "https://docs.rs/delight-helpers/"
+repository = "https://github.com/virtualritz/delight-helpers/"
 
 [[bin]]
 name = "rdl"
@@ -20,7 +20,7 @@ path = "src/rdl.rs"
 
 [dependencies]
 anyhow = "1.0.55"
-clap = { version = "3.1.0", features = ["derive", "color", "suggestions", "unicode", "wrap_help"] }
+clap = { version = "3.1.2", features = ["derive", "color", "suggestions", "unicode", "wrap_help"] }
 clap_complete = "3.1.0"
 frame-sequence = "0.1.0"
 human-panic = "1.0.3"
