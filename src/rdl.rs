@@ -1,25 +1,27 @@
-use clap::{load_yaml, App};
-use eyre::{eyre, Result};
-use std::path::Path;
-
-#[macro_use]
-extern crate pest_derive;
-
-mod frame_sequence_parser;
-use frame_sequence_parser::*;
+use anyhow::{anyhow, Result};
+use clap::CommandFactory;
+use clap_complete::{
+    generate,
+    shells::{Bash, Elvish, Fish, PowerShell, Zsh},
+};
+use frame_sequence::parse_frame_sequence;
+use std::{io, str::FromStr};
+use wax::Glob;
 
 const VERSION: &str = env!("CARGO_PKG_VERSION");
+
+mod rdl_cli;
+use rdl_cli::*;
 
 fn main() -> Result<()> {
     run()
 }
 
 fn run() -> Result<()> {
-    let yaml = load_yaml!("cli.yml");
-    let app = App::from_yaml(yaml).get_matches();
+    let cli = build_cli();
 
     // Read config file (if it exists).
-    //let config_file = app.value_of("config").unwrap_or("rdla.toml");
+    //let config_file = cli.value_of("config").unwrap_or("rdla.toml");
 
     /*
     let mut config: Config = {
@@ -40,17 +42,28 @@ fn run() -> Result<()> {
         }
     };*/
 
-    match app.subcommand() {
-        ("version", Some(_v)) => {
+    match cli.command {
+        Command::Version => {
             println!("rdl version {}", VERSION);
             Ok(())
         }
-        ("render", Some(render_args)) => render(render_args),
-        ("cat", Some(cat_args)) => cat(cat_args),
-        _ => Err(eyre!(
-            "Unknown/missing subcommand. Please specify one of 'render', 'cat' or --help"
-        )),
+        Command::Render(render_args) => render(render_args),
+        Command::Cat(cat_args) => cat(cat_args),
+        Command::GenerateCompletions { shell } => generate_completions(shell),
     }
+}
+
+fn generate_completions(shell: String) -> Result<()> {
+    match shell.as_str() {
+        "bash" => generate(Bash, &mut Cli::command(), "rdl", &mut io::stdout()),
+        "elvish" => generate(Elvish, &mut Cli::command(), "rdl", &mut io::stdout()),
+        "fish" => generate(Fish, &mut Cli::command(), "rdl", &mut io::stdout()),
+        "powershell" => generate(PowerShell, &mut Cli::command(), "rdl", &mut io::stdout()),
+        "zsh" => generate(Zsh, &mut Cli::command(), "rdl", &mut io::stdout()),
+        _ => return Err(anyhow!("Unknown shell '{shell}'.")),
+    }
+
+    Ok(())
 }
 
 fn nsi_render(ctx: &nsi::Context, file_name: &str) {
@@ -67,28 +80,36 @@ fn nsi_render(ctx: &nsi::Context, file_name: &str) {
     ]);
 }
 
-fn render(args: &clap::ArgMatches) -> Result<()> {
-    let frame_sequence = if let Some(frame_sequence_string) = args.value_of("FRAMES") {
-        parse_frame_sequence(frame_sequence_string)?
+fn render(render: Render) -> Result<()> {
+    let frame_sequence = if let Some(frame_sequence_string) = &render.frames {
+        parse_frame_sequence(frame_sequence_string)
+            .map_err(|e| anyhow!("Error in frame sequence expression{e}"))?
     } else {
         vec![]
     };
 
-    match args.value_of("FILE") {
-        Some(file_name) => {
-            let ctx = if args.is_present("cloud") {
-                nsi::Context::new(&[nsi::integer!("cloud", true as _)])
-            } else {
-                nsi::Context::new(&[])
+    let cloud = render.cloud;
+    for maybe_glob in &render.file {
+        let glob = Glob::from_str(maybe_glob)?;
+
+        for file_name in glob.walk(".", usize::MAX) {
+            let file_name = file_name.map_err(|e| anyhow!("{e}"))?;
+            let file_name = file_name.path().to_str().unwrap();
+
+            let ctx = {
+                if cloud {
+                    nsi::Context::new(&[nsi::integer!("cloud", true as _)])
+                } else {
+                    nsi::Context::new(&[nsi::integer!("cloud", false as _)])
+                }
             }
             .unwrap();
 
             if let Some(pos) = file_name.find('@') {
                 if frame_sequence.is_empty() {
-                    return Err(eyre!(
-                        "[rdl] No frame sequence to fill placeholder `@` in `{}` specified.",
-                        file_name
-                    ));
+                    return Err(anyhow!(
+                    "[rdl] No frame sequence to fill placeholder `@` in `{file_name}` specified.",
+                ));
                 }
 
                 let padding = if let Some(number) = file_name.get(pos + 1..pos + 2) {
@@ -104,58 +125,55 @@ fn render(args: &clap::ArgMatches) -> Result<()> {
                 };
 
                 // Render frame sequence.
-                for frame in frame_sequence {
+                for frame in &frame_sequence {
                     let frame_string = if padding != 0 {
                         format!("{:0width$}", frame, width = padding)
                     } else {
-                        format!("{}", frame)
+                        format!("{frame}")
                     };
 
                     let frame_file_name =
                         file_name.replace(frame_number_placeholder, &frame_string);
 
-                    if args.is_present("verbose") || args.is_present("dry_run") {
-                        println!("[rdl] Rendering `{}`.", frame_file_name);
-                    }
-
-                    if !args.is_present("dry_run") {
-                        nsi_render(&ctx, &frame_file_name);
-                    }
+                    render_file(&ctx, &frame_file_name, &render);
                 }
             } else {
-                if args.is_present("verbose") || args.is_present("dry_run") {
-                    println!("[rdl] Rendering `{}`.", file_name);
-                }
-
-                if !args.is_present("dry_run") {
-                    nsi_render(&ctx, file_name);
-                }
+                render_file(&ctx, &file_name, &render);
             }
-            Ok(())
         }
+    }
+    /*None => Err(eyre!(
+        "[rdl] render subcommand requires specifying a file to render"
+    )),*/
+    Ok(())
+}
 
-        None => Err(eyre!(
-            "[rdl] render subcommand requires specifying a file to render"
-        )),
+fn render_file(ctx: &nsi::Context, file_name: &str, render: &Render) {
+    if render.verbose || render.dry_run {
+        println!("[rdl] Rendering `{}`.", file_name);
+    }
+
+    if !render.dry_run {
+        nsi_render(&ctx, file_name);
     }
 }
 
-fn cat(cat_args: &clap::ArgMatches) -> Result<()> {
-    if let Some(file_name) = cat_args.value_of("FILE") {
-        let path = Path::new(cat_args.value_of("OUTPUT").unwrap_or("stdout"));
+fn cat(cat: Cat) -> Result<()> {
+    if let Some(file_name) = &cat.file {
+        let path = cat.output.clone().unwrap_or("stdout".to_string());
 
-        let mut args = vec![nsi::string!("streamfilename", path.to_str().unwrap())];
+        let mut args = vec![nsi::string!("streamfilename", path.as_str())];
 
-        if cat_args.is_present("binary") {
+        if cat.binary {
             args.push(nsi::string!("streamformat", "binarynsi"));
         }
 
-        if cat_args.is_present("gzip") {
+        if cat.gzip {
             args.push(nsi::string!("streamcompression", "gzip"));
         }
 
         let mut expand = vec!["apistream"];
-        if cat_args.is_present("expand") {
+        if cat.expand {
             expand.push("lua");
             expand.push("dynamiclibrary");
         }
@@ -172,7 +190,7 @@ fn cat(cat_args: &clap::ArgMatches) -> Result<()> {
                     "apistream"
                 }
             ),
-            nsi::string!("filename", file_name),
+            nsi::string!("filename", file_name.as_str()),
         ]);
     }
     Ok(())
