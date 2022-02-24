@@ -8,7 +8,7 @@ use frame_sequence::parse_frame_sequence;
 use std::{io, str::FromStr};
 use wax::Glob;
 
-const VERSION: &str = env!("CARGO_PKG_VERSION");
+const _VERSION: &str = env!("CARGO_PKG_VERSION");
 
 mod rdl_cli;
 use rdl_cli::*;
@@ -43,10 +43,6 @@ fn run() -> Result<()> {
     };*/
 
     match cli.command {
-        Command::Version => {
-            println!("rdl version {}", VERSION);
-            Ok(())
-        }
         Command::Render(render_args) => render(render_args),
         Command::Cat(cat_args) => cat(cat_args),
         Command::GenerateCompletions { shell } => generate_completions(shell),

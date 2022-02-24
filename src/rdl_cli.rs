@@ -8,7 +8,9 @@ pub fn build_cli() -> Cli {
 #[derive(Parser)]
 #[clap(
     name = "rdl",
-    about = "Renders or filters NSI streams or Lua NSI files", long_about = None
+    about = "Renders or filters NSI streams or Lua NSI files",
+    after_help = "‘rdl -h’ prints a brief overview while ‘rdl --help’ gives all details",
+    after_long_help = "",
 )]
 pub struct Cli {
     #[clap(subcommand)]
@@ -18,7 +20,6 @@ pub struct Cli {
 #[derive(Subcommand)]
 pub enum Command {
     #[clap(about = "Display the renderer version")]
-    Version,
     Render(Render),
     Cat(Cat),
     #[clap(
