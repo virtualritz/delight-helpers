@@ -143,3 +143,19 @@ OPTIONS:
     -o, --output <OUTPUT>
             Dump NSI stream to OUTPUT instead of stdout
 ```
+
+#### `generate-completions` Subcommand
+
+```
+rdl-generate-completions
+Generate completion scripts for various shells
+
+USAGE:
+    rdl generate-completions <SHELL>
+
+ARGS:
+    <SHELL>    The shell to generate completions for [possible values: bash, fish, zsh, powershell, elvish]
+
+OPTIONS:
+    -h, --help    Print help information
+```
