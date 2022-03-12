@@ -53,7 +53,7 @@ ARGS:
             foo.@4.nsi ⟶   foo.0001.nsi, foo.0002.nsi, …
 
             Globbing using "<pattern>" (in quotes) is supported -
-            even if your shell has support for it:
+            even if your shell has no support for it:
             "**/{*.{nsi,lua}}" ⟶ all .nsi and .lua files in the
             current folder and its subfolders
 
