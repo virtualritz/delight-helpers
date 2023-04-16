@@ -109,7 +109,7 @@ pub struct Render {
         help = "FRAME(s) to render – 1,2,10-20,40-30@2",
         long_help = "FRAME(S) to render\n\
             They can be specified individually:\n\
-            1,2​,3,5,8,13\n\
+            1,2,3,5,8,13\n\
             Or as a squence:\n\
             10-15   ⟶   10, 11, 12, 13, 14, 15\n\
             With an optional step size:\n\

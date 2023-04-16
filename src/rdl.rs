@@ -143,7 +143,7 @@ fn render(render: Render) -> Result<()> {
                     ctx.render_control(&[nsi::integer!("frame", *frame as _)]);
                 }
             } else {
-                render_file(&ctx, &file_name, &render);
+                render_file(&ctx, file_name, &render);
             }
 
             //ctx.render_control(&[nsi::string!("action", "start")]);
@@ -162,7 +162,7 @@ fn render_file(ctx: &nsi::Context, file_name: &str, render: &Render) {
     }
 
     if !render.dry_run {
-        nsi_render(&ctx, file_name);
+        nsi_render(ctx, file_name);
     }
 }
 
