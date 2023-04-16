@@ -167,8 +167,8 @@ OPTIONS:
     -h, --help    Print help information
 ```
 
-For example, if you use []`oh-my-zsh`](https://ohmyz.sh/), you can install completions by running:
+For example, if you use [`oh-my-zsh`](https://ohmyz.sh/), you can install completions by running:
 
 ```
-rdl generate-completions zsh ~/.oh-my-zsh/completions/_rdl
+rdl generate-completions zsh >~/.oh-my-zsh/completions/_rdl
 ```
