@@ -6,14 +6,14 @@ pub fn build_cli() -> Cli {
 }
 
 #[derive(Parser)]
-#[clap(
+#[command(
     name = "rdl",
-    about = "Renders or filters NSI streams or Lua NSI files",
-    after_help = "‘rdl -h’ prints a brief overview while ‘rdl --help’ gives all details",
+    about = "Renders or filters NSI streams or Lua NSI files with 3Delight",
     after_long_help = "",
+    max_term_width = 80
 )]
 pub struct Cli {
-    #[clap(subcommand)]
+    #[command(subcommand)]
     pub command: Command,
 }
 
@@ -21,28 +21,28 @@ pub struct Cli {
 pub enum Command {
     Render(Render),
     Cat(Cat),
-    #[clap(
+    #[command(
         name = "generate-completions",
         about = "Generate completion scripts for various shells",
-        display_order = 9999,
+        display_order = 9999
     )]
     GenerateCompletions {
-        #[clap(
+        #[arg(
             help = "The shell to generate completions for",
-            possible_values = &["bash", "fish", "zsh", "powershell", "elvish"]
+            value_parser = clap::builder::PossibleValuesParser::new(["bash", "fish", "zsh", "powershell", "elvish"])
         )]
         shell: String,
     },
 }
 
 #[derive(Parser)]
-#[clap(
+#[command(
     arg_required_else_help = true,
     about = "Render an image of result with 3Delight",
 //    help_message = "Print this/a long help message."
 )]
 pub struct Render {
-    #[clap(
+    #[arg(
         name = "FILE",
         index = 1,
         help = "The NSI FILE(s) to render",
@@ -57,15 +57,15 @@ pub struct Render {
     )]
     pub file: Vec<String>,
 
-    #[clap(
+    #[arg(
         long,
         short = 'C',
         conflicts_with = "cloud",
-        help = "Render using the the given 3Delight COLLECTIVE",
+        help = "Render using the the given 3Delight COLLECTIVE"
     )]
     pub collective: Option<String>,
 
-    #[clap(
+    #[arg(
         long,
         short = 'c',
         conflicts_with = "collective",
@@ -73,7 +73,7 @@ pub struct Render {
     )]
     pub cloud: bool,
 
-    #[clap(
+    #[arg(
         long,
         short = 'd',
         help = "Send the image(s) being rendered to 3Delight Display",
@@ -82,20 +82,20 @@ pub struct Render {
     )]
     pub display: bool,
 
-    #[clap(long, short = 't', help = "Launch the render using number of THREADS")]
+    #[arg(long, short = 't', help = "Launch the render using number of THREADS")]
     pub threads: Option<usize>,
 
-    #[clap(
+    #[arg(
         long,
         short = 'v',
         help = "Print the names of the file(s) being rendered"
     )]
     pub verbose: bool,
 
-    #[clap(long, short = 'p', help = "Print rendering progress at each bucket")]
+    #[arg(long, short = 'p', help = "Print rendering progress at each bucket")]
     pub progress: bool,
 
-    #[clap(
+    #[arg(
         long,
         help = "Do not render, just print what would be done",
         long_help = "Do not render, just print the name of the file(s) to be\n\
@@ -103,7 +103,7 @@ pub struct Render {
     )]
     pub dry_run: bool,
 
-    #[clap(
+    #[arg(
         long,
         short = 'f',
         help = "FRAME(s) to render – 1,2,10-20,40-30@2",
@@ -125,39 +125,37 @@ pub struct Render {
             80-70@4 ⟶   80, 76, 72\n"
     )]
     pub frames: Option<String>,
-
     //short = 'I'
 
     //ignore_glob <pattern>
-
 }
 
 #[derive(Parser)]
-#[clap(
+#[command(
     arg_required_else_help = true,
-    about = "Dump the input as an NSI stream to stdout/a file",
+    about = "Dump the input as an NSI stream to stdout or a file",
 //    help_message = "Print this help message."
 )]
 pub struct Cat {
-    #[clap(long, short = 'b', help = "Encode NSI stream in binary format")]
+    #[arg(long, short = 'b', help = "Encode NSI stream in binary format")]
     pub binary: bool,
 
-    #[clap(long, short = 'g', help = "Compress NSI stream using GNU zip format")]
+    #[arg(long, short = 'g', help = "Compress NSI stream using GNU zip format")]
     pub gzip: bool,
 
-    #[clap(long, short = 'e', help = "Expand archives and procedurals")]
+    #[arg(long, short = 'e', help = "Expand archives and procedurals")]
     pub expand: bool,
 
-    #[clap(long = "expand-archives", help = "Expand archives")]
+    #[arg(long = "expand-archives", help = "Expand archives")]
     pub expand_archives: bool,
 
-    #[clap(long = "expand-procedurals", help = "Expand procedurals")]
+    #[arg(long = "expand-procedurals", help = "Expand procedurals")]
     pub expand_procedurals: bool,
 
-    #[clap(name = "FILE", help = "The NSI FILE(s) to dump")]
+    #[arg(name = "FILE", help = "The NSI FILE(s) to dump")]
     pub file: Option<String>,
 
-    #[clap(
+    #[arg(
         long,
         short = 'o',
         help = "Dump NSI stream to OUTPUT",

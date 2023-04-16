@@ -4,6 +4,13 @@
 
 For now just a `renderdl` replacement.
 
+* [Installation](#installation)
+* [Helpers](#helpers)
+  * [`rdl`](#rdl)
+    * [`render` Subcommand](#render-subcommand)
+    * [`cat` Subcommand](#cat-subcommand)
+    * [`generate-completions` Subcommand](#generate-completions-subcommand)
+
 ## Installation
 
 1. [Install Rust](https://www.rust-lang.org/tools/install).
@@ -19,7 +26,7 @@ For now just a `renderdl` replacement.
 
 ```
 rdl
-Renders or filters NSI streams or Lua NSI files
+Renders or filters NSI streams or Lua NSI files with 3Delight
 
 USAGE:
     rdl <SUBCOMMAND>
@@ -40,7 +47,7 @@ SUBCOMMANDS:
 
 ```
 rdl-render
-Render an image of result with 3Delight
+Render (a sequence of) image(s) with 3Delight
 
 USAGE:
     rdl render [OPTIONS] [FILE]...
@@ -112,7 +119,7 @@ OPTIONS:
 
 ```
 rdl-cat
-Dump the input as an NSI stream to stdout/a file
+Dump the input as an NSI stream to stdout or a file
 
 USAGE:
     rdl cat [OPTIONS] [FILE]
@@ -158,4 +165,10 @@ ARGS:
 
 OPTIONS:
     -h, --help    Print help information
+```
+
+For example, if you use []`oh-my-zsh`](https://ohmyz.sh/), you can install completions by running:
+
+```
+rdl generate-completions zsh ~/.oh-my-zsh/completions/_rdl
 ```

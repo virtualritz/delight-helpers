@@ -1,9 +1,8 @@
 [package]
 name = "delight-helpers"
-version = "0.1.4"
+version = "0.1.5"
 authors = ["Moritz Moeller <virtualritz@protonmail.com>"]
 edition = "2021"
-resolver = "2"
 keywords = ["graphics", "rendering", "3d", "ray-tracing", "scene-description"]
 categories = ["command-line-utilities", "graphics", "multimedia::images", "rendering"]
 license = "Apache-2.0 OR BSD-3-Clause OR MIT OR Zlib"
@@ -19,16 +18,14 @@ name = "rdl"
 path = "src/rdl.rs"
 
 [dependencies]
-anyhow = "1.0.55"
-clap = { version = "3.1.2", features = ["derive", "color", "suggestions", "unicode", "wrap_help"] }
-clap_complete = "3.1.0"
-frame-sequence = "0.1.0"
-human-panic = "1.0.3"
-nsi = "0.6.0"
-wax = { version = "0.4.0", features = ["diagnostics-report"] }
-
-[profile.dev]
-split-debuginfo = "unpacked"
+anyhow = "1.0.70"
+clap = { version = "4.2", features = ["derive", "color", "suggestions", "unicode", "wrap_help"] }
+clap_complete = "4.2"
+frame-sequence = "0.1"
+human-panic = "1.1"
+nsi = { version = "0.7", path = "../nsi-old" }
+#nsi-traits = { path = "../nsi/crates/nsi-traits" }
+wax = { version = "0.5.0", features = ["diagnostics-report"] }
 
 [profile.release]
 lto = true

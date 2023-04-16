@@ -92,7 +92,7 @@ fn render(render: Render) -> Result<()> {
     for maybe_glob in &render.file {
         let glob = Glob::from_str(maybe_glob)?;
 
-        for file_name in glob.walk(".", usize::MAX) {
+        for file_name in glob.walk(".") {
             let file_name = file_name.map_err(|e| anyhow!("{e}"))?;
             let file_name = file_name.path().to_str().unwrap();
 
@@ -105,9 +105,8 @@ fn render(render: Render) -> Result<()> {
                     ctx_args.push(nsi::string!("collective", collective.as_str()));
                 }
 
-                nsi::Context::new(&ctx_args)
-            }
-            .unwrap();
+                nsi::Context::new(Some(&ctx_args)).unwrap()
+            };
 
             if let Some(pos) = file_name.find('@') {
                 if frame_sequence.is_empty() {
@@ -140,10 +139,15 @@ fn render(render: Render) -> Result<()> {
                         file_name.replace(frame_number_placeholder, &frame_string);
 
                     render_file(&ctx, &frame_file_name, &render);
+
+                    ctx.render_control(&[nsi::integer!("frame", *frame as _)]);
                 }
             } else {
                 render_file(&ctx, &file_name, &render);
             }
+
+            //ctx.render_control(&[nsi::string!("action", "start")]);
+            //ctx.render_control(&[nsi::string!("action", "wait")]);
         }
     }
     /*None => Err(eyre!(
@@ -183,7 +187,7 @@ fn cat(cat: Cat) -> Result<()> {
         }
         args.push(nsi::strings!("executeprocedurals", &expand));
 
-        let ctx = nsi::Context::new(&args).unwrap();
+        let ctx = nsi::Context::new(Some(&args)).unwrap();
 
         ctx.evaluate(&[
             nsi::string!(
