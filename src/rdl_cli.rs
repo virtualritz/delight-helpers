@@ -13,6 +13,14 @@ pub fn build_cli() -> Cli {
     max_term_width = 80
 )]
 pub struct Cli {
+    #[arg(
+        display_order = 10,
+        long,
+        short,
+        action = clap::ArgAction::Count,
+        help = "Verbosity level ('-v', '-vv', '-vvv', etc.)",
+    )]
+    pub verbose: u8,
     #[command(subcommand)]
     pub command: Command,
 }
@@ -48,12 +56,8 @@ pub struct Render {
         help = "The NSI FILE(s) to render",
         long_help = "The NSI FILE(s) to render\n\
             Frame number placeholders are specified using @[padding]:\n\
-            foo.@.nsi  ⟶   foo.1.nsi, foo.2.nsi, …\n\
-            foo.@4.nsi ⟶   foo.0001.nsi, foo.0002.nsi, …\n\n\
-            Globbing using \"<pattern>\" (in quotes) is supported -\n\
-            even if your shell has no support for it:\n\
-            \"**/{*.{nsi,lua}}\" ⟶   all .nsi and .lua files in the\n\
-                                   current folder and its subfolders\n"
+            foo.@.nsi   ➞  foo.1.nsi, foo.2.nsi, …\n\
+            foo.@4.nsi  ➞  foo.0001.nsi, foo.0002.nsi, …"
     )]
     pub file: Vec<String>,
 
@@ -67,62 +71,80 @@ pub struct Render {
 
     #[arg(
         long,
-        short = 'c',
+        short,
         conflicts_with = "collective",
         help = "Render using 3Delight Cloud"
     )]
     pub cloud: bool,
 
+    /*
     #[arg(
         long,
-        short = 'd',
+        short,
         help = "Send the image(s) being rendered to 3Delight Display",
-        long_help = "Send 3Delight Display (a copy of) the image(s) being\n\
-                rendered.\n"
+        long_help = "Send 3Delight Display (a copy of) the image(s) being \
+            rendered."
     )]
     pub display: bool,
-
-    #[arg(long, short = 't', help = "Launch the render using number of THREADS")]
-    pub threads: Option<usize>,
+    */
 
     #[arg(
         long,
-        short = 'v',
-        help = "Print the names of the file(s) being rendered"
+        short,
+        help = "Launch the render using number of THREADS",
+        long_help = "Launch the render using number of THREADS.\n\
+            If not specified the number of threads will be determined by the \
+            COLLECTIVE or the number of cores on the machine."
     )]
-    pub verbose: bool,
+    pub threads: Option<usize>,
 
-    #[arg(long, short = 'p', help = "Print rendering progress at each bucket")]
+    /*
+    #[arg(
+        long,
+        short,
+        help = "Display a rendering progress bar")]
     pub progress: bool,
+    */
 
     #[arg(
         long,
         help = "Do not render, just print what would be done",
-        long_help = "Do not render, just print the name of the file(s) to be\n\
-                rendered.\n"
+        long_help = "Do not render, just print the name of the file(s) to be \
+            rendered."
     )]
     pub dry_run: bool,
 
     #[arg(
         long,
-        short = 'f',
+        help = "Add render commands to the NSI stream",
+        long_help = "Add render commands to the NSI stream.\n\
+            Useful when the stream is missing those commands.\n\
+            This doesn't check if the stream already has render commands. If \
+            it does this may cause parts or all of the stream to render \
+            twice."
+    )]
+    pub force_render: bool,
+
+    #[arg(
+        long,
+        short,
         help = "FRAME(s) to render – 1,2,10-20,40-30@2",
         long_help = "FRAME(S) to render\n\
             They can be specified individually:\n\
             1,2,3,5,8,13\n\
             Or as a squence:\n\
-            10-15   ⟶   10, 11, 12, 13, 14, 15\n\
+            10-15    ➞  10, 11, 12, 13, 14, 15\n\
             With an optional step size:\n\
-            10-20@2 ⟶   10, 12, 14, 16, 18, 20\n\
+            10-20@2  ➞  10, 12, 14, 16, 18, 20\n\
             Step size is always positive.\n\
             To render a sequence backwards specify the range in reverse:\n\
-            42-33@3 ⟶   42, 39, 36, 33\n\
+            42-33@3  ➞  42, 39, 36, 33\n\
             With binary splitting. Useful to quickly check if a sequence\n\
             has ‘issues’ in some frames:\n\
-            10-20@b ⟶   10, 20, 15, 12, 17, 11, 13, 16, 18, 14, 19\n\
+            10-20@b  ➞  10, 20, 15, 12, 17, 11, 13, 16, 18, 14, 19\n\
             The last frame of a sequence will be omitted if\n\
             the specified step size does not touch it:\n\
-            80-70@4 ⟶   80, 76, 72\n"
+            80-70@4  ➞  80, 76, 72"
     )]
     pub frames: Option<String>,
     //short = 'I'
