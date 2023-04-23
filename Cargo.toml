@@ -1,6 +1,6 @@
 [package]
 name = "delight-helpers"
-version = "0.1.5"
+version = "0.1.6"
 authors = ["Moritz Moeller <virtualritz@protonmail.com>"]
 edition = "2021"
 keywords = ["graphics", "rendering", "3d", "ray-tracing", "scene-description"]
