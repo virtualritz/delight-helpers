@@ -29,6 +29,7 @@ pub struct Cli {
 pub enum Command {
     Render(Render),
     Cat(Cat),
+    Watch(Watch),
     #[command(
         name = "generate-completions",
         about = "Generate completion scripts for various shells",
@@ -46,7 +47,46 @@ pub enum Command {
 #[derive(Parser)]
 #[command(
     arg_required_else_help = true,
-    about = "Render an image of result with 3Delight",
+    about = "Watch folder(s) for new files and render them with 3Delight",
+//    help_message = "Print this/a long help message."
+)]
+pub struct Watch {
+    #[arg(
+        name = "FOLDER",
+        index = 1,
+        help = "The FOLDER(s) to watch for NSI files(s) to render"
+    )]
+    pub folder: Vec<String>,
+
+    #[arg(
+        long,
+        short = 'C',
+        conflicts_with = "cloud",
+        help = "Render using the the given 3Delight COLLECTIVE"
+    )]
+    pub collective: Option<String>,
+
+    #[arg(
+        long,
+        short,
+        conflicts_with = "collective",
+        help = "Render using 3Delight Cloud"
+    )]
+    pub cloud: bool,
+
+    #[arg(
+        long,
+        short,
+        help = "Recurse into the given folder(s)",
+        long_help = "Recurse into the given folder(s) when looking for new files to render"
+    )]
+    pub recursive: bool,
+}
+
+#[derive(Parser)]
+#[command(
+    arg_required_else_help = true,
+    about = "Render NSI file(s) with 3Delight",
 //    help_message = "Print this/a long help message."
 )]
 pub struct Render {
@@ -87,7 +127,6 @@ pub struct Render {
     )]
     pub display: bool,
     */
-
     #[arg(
         long,
         short,
@@ -105,7 +144,6 @@ pub struct Render {
         help = "Display a rendering progress bar")]
     pub progress: bool,
     */
-
     #[arg(
         long,
         help = "Do not render, just print what would be done",
@@ -147,9 +185,6 @@ pub struct Render {
             80-70@4  ➞  80, 76, 72"
     )]
     pub frames: Option<String>,
-    //short = 'I'
-
-    //ignore_glob <pattern>
 }
 
 #[derive(Parser)]

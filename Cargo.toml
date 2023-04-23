@@ -25,7 +25,10 @@ fern = { version = "0.6.2", features = ["colored"] }
 frame-sequence = "0.1"
 human-panic = "1.1"
 log = { version = "0.4.17", features = ["std"] }
-nsi = { path = "../nsi-old" }
+notify = "5.1.0"
+nsi = { version = "0.7", path = "../nsi-old" }
+#nsi-traits = { path = "../nsi/crates/nsi-traits" }
+#wax = { version = "0.5.0", features = ["diagnostics-report"] }
 
 [profile.release]
 lto = true
