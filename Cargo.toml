@@ -1,6 +1,6 @@
 [package]
 name = "delight-helpers"
-version = "0.1.6"
+version = "0.1.7"
 authors = ["Moritz Moeller <virtualritz@protonmail.com>"]
 edition = "2021"
 keywords = ["graphics", "rendering", "3d", "ray-tracing", "scene-description"]
@@ -17,8 +17,12 @@ repository = "https://github.com/virtualritz/delight-helpers/"
 name = "rdl"
 path = "src/rdl.rs"
 
+#[[bin]]
+#name = "tdl"
+#path = "src/tdl.rs"
+
 [dependencies]
-anyhow = "1.0.70"
+anyhow = "1.0.71"
 clap = { version = "4.2", features = ["derive", "color", "suggestions", "unicode", "wrap_help"] }
 clap_complete = "4.2"
 fern = { version = "0.6.2", features = ["colored"] }
@@ -26,9 +30,10 @@ frame-sequence = "0.1"
 human-panic = "1.1"
 log = { version = "0.4.17", features = ["std"] }
 notify = "5.1.0"
-nsi = { version = "0.7", path = "../nsi-old" }
-#nsi-traits = { path = "../nsi/crates/nsi-traits" }
-#wax = { version = "0.5.0", features = ["diagnostics-report"] }
+nsi = { version = "0.7"} #, path = "../nsi-old" }
+
+[build-dependencies]
+bindgen = "0.65.1"
 
 [profile.release]
 lto = true

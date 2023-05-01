@@ -36,7 +36,7 @@ pub fn watch(args: Watch) -> Result<()> {
     });
 
     info!("Watching for files to render in {:?}…", args.folder);
-    // just print all events, this blocks forever
+
     while let Ok(result) = rx.recv() {
         if let Ok(event) = result {
             if let Create(_) = event.kind {
@@ -67,5 +67,7 @@ fn render(file_name: &str, args: &Watch) {
         nsi::Context::new(Some(&ctx_args)).unwrap()
     };
 
-    render_file(&ctx, file_name, false)
+    render_file(&ctx, file_name, false);
+
+    ctx.render_control(nsi::Action::Wait, None);
 }

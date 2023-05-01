@@ -94,7 +94,7 @@ pub struct Render {
         name = "FILE",
         index = 1,
         help = "The NSI FILE(s) to render",
-        long_help = "The NSI FILE(s) to render\n\
+        long_help = "The NSI FILE(s) to render.\n\
             Frame number placeholders are specified using @[padding]:\n\
             foo.@.nsi   ➞  foo.1.nsi, foo.2.nsi, …\n\
             foo.@4.nsi  ➞  foo.0001.nsi, foo.0002.nsi, …"
@@ -105,7 +105,8 @@ pub struct Render {
         long,
         short = 'C',
         conflicts_with = "cloud",
-        help = "Render using the the given 3Delight COLLECTIVE"
+        help = "Use the given COLLECTIVE",
+        long_help = "Render using the given 3Delight COLLECTIVE."
     )]
     pub collective: Option<String>,
 
@@ -113,7 +114,8 @@ pub struct Render {
         long,
         short,
         conflicts_with = "collective",
-        help = "Render using 3Delight Cloud"
+        help = "Use 3Delight Cloud",
+        long_help = "Render using 3Delight Cloud."
     )]
     pub cloud: bool,
 

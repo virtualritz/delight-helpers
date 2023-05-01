@@ -1,7 +1,7 @@
 use crate::{Render, Result};
 use anyhow::anyhow;
 use frame_sequence::parse_frame_sequence;
-use log::info;
+use log::{debug, error, info, trace, warn, Level};
 
 /*fn render(args: Render) -> Result<()> {
     let frame_sequence = if let Some(frame_sequence_string) = &args.frames {
@@ -89,8 +89,17 @@ pub fn render(args: Render) -> Result<()> {
     };
 
     for file_name in &args.file {
+        let error_handler =
+            nsi::ErrorCallback::new(|level: Level, error: i32, message: &str| match level {
+                Level::Error => error!("[{error}] {message}"),
+                Level::Warn => warn!("[{}] {}", error, message),
+                Level::Info => info!("[{}] {}", error, message),
+                Level::Debug => debug!("[{}] {}", error, message),
+                Level::Trace => trace!("[{}] {}", error, message),
+            });
+
         let ctx = {
-            let mut ctx_args = Vec::with_capacity(2);
+            let mut ctx_args = vec![nsi::callback!("errorhandler", error_handler)];
 
             if args.cloud {
                 ctx_args.push(nsi::integer!("cloud", true as _));
@@ -137,8 +146,8 @@ pub fn render(args: Render) -> Result<()> {
         }
 
         if args.force_render {
-            ctx.render_control(&[nsi::string!("action", "start")]);
-            ctx.render_control(&[nsi::string!("action", "wait")]);
+            ctx.render_control(nsi::Action::Start, None);
+            ctx.render_control(nsi::Action::Wait, None);
         }
     }
 

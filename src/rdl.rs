@@ -55,10 +55,10 @@ fn run() -> Result<()> {
         .chain(std::io::stdout())
         .format(move |out, message, record| {
             out.finish(format_args!(
-                "[{}] [{}] {}",
+                "[{}] [rdl] {}",
                 // This will color the log level only, not the whole line. Just a touch.
                 colors.color(record.level()),
-                record.target(),
+                //record.target(),
                 message
             ))
         })
