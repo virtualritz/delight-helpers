@@ -66,23 +66,23 @@ Arguments:
 
 Options:
   -C, --collective <COLLECTIVE>
-          Render using the the given 3Delight COLLECTIVE
+          Render using the given 3Delight COLLECTIVE
 
   -c, --cloud
           Render using 3Delight Cloud
 
   -t, --threads <THREADS>
-          Launch the render using number of THREADS.
+          Launch the render using number of THREADS
           If not specified the number of threads will be determined by the
           COLLECTIVE or the number of cores on the machine.
 
       --dry-run
-          Do not render, just print the name of the file(s) to be rendered.
+          Do not render, just print the name of the file(s) to be rendered
 
       --force-render
-          Add render commands to the NSI stream.
-          Useful when the stream is missing those commands.
-          This doesn't check if the stream already has render commands. If it
+          Add a render command to the NSI stream
+          Useful when the stream is missing this command.
+          This doesn't check if the stream already has a render command. If it
           does this may cause parts or all of the stream to render twice.
 
   -f, --frames <FRAMES>

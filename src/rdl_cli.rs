@@ -94,7 +94,7 @@ pub struct Render {
         name = "FILE",
         index = 1,
         help = "The NSI FILE(s) to render",
-        long_help = "The NSI FILE(s) to render.\n\
+        long_help = "The NSI FILE(s) to render\n\
             Frame number placeholders are specified using @[padding]:\n\
             foo.@.nsi   ➞  foo.1.nsi, foo.2.nsi, …\n\
             foo.@4.nsi  ➞  foo.0001.nsi, foo.0002.nsi, …"
@@ -106,7 +106,7 @@ pub struct Render {
         short = 'C',
         conflicts_with = "cloud",
         help = "Use the given COLLECTIVE",
-        long_help = "Render using the given 3Delight COLLECTIVE."
+        long_help = "Render using the given 3Delight COLLECTIVE"
     )]
     pub collective: Option<String>,
 
@@ -115,7 +115,7 @@ pub struct Render {
         short,
         conflicts_with = "collective",
         help = "Use 3Delight Cloud",
-        long_help = "Render using 3Delight Cloud."
+        long_help = "Render using 3Delight Cloud"
     )]
     pub cloud: bool,
 
@@ -133,7 +133,7 @@ pub struct Render {
         long,
         short,
         help = "Launch the render using number of THREADS",
-        long_help = "Launch the render using number of THREADS.\n\
+        long_help = "Launch the render using number of THREADS\n\
             If not specified the number of threads will be determined by the \
             COLLECTIVE or the number of cores on the machine."
     )]
@@ -150,16 +150,16 @@ pub struct Render {
         long,
         help = "Do not render, just print what would be done",
         long_help = "Do not render, just print the name of the file(s) to be \
-            rendered."
+            rendered"
     )]
     pub dry_run: bool,
 
     #[arg(
         long,
-        help = "Add render commands to the NSI stream",
-        long_help = "Add render commands to the NSI stream.\n\
-            Useful when the stream is missing those commands.\n\
-            This doesn't check if the stream already has render commands. If \
+        help = "Add a render command to the NSI stream",
+        long_help = "Add a render command to the NSI stream\n\
+            Useful when the stream is missing this command.\n\
+            This doesn't check if the stream already has a render command. If \
             it does this may cause parts or all of the stream to render \
             twice."
     )]
