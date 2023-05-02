@@ -1,5 +1,5 @@
 use crate::Result;
-use crate::{render_file, Watch};
+use crate::{evaluate_file, Watch};
 use log::info;
 use notify::{
     Config, EventKind::Create, PollWatcher, RecommendedWatcher, RecursiveMode, Watcher, WatcherKind,
@@ -67,7 +67,7 @@ fn render(file_name: &str, args: &Watch) {
         nsi::Context::new(Some(&ctx_args)).unwrap()
     };
 
-    render_file(&ctx, file_name, false);
+    evaluate_file(&ctx, file_name, false);
 
     ctx.render_control(nsi::Action::Wait, None);
 }

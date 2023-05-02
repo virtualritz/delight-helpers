@@ -83,7 +83,7 @@ pub struct Watch {
     pub recursive: bool,
 }
 
-#[derive(Parser)]
+#[derive(Parser, Clone)]
 #[command(
     arg_required_else_help = true,
     about = "Render NSI file(s) with 3Delight",
