@@ -89,11 +89,24 @@ pub fn render(args: Render) -> Result<()> {
         vec![]
     };
 
-    let file_names: Vec<_> = args
-        .file
+    let cloud = args.cloud;
+
+    let error_handler_arg = nsi::callback!(
+        "errorhandler",
+        nsi::ErrorCallback::new(|level: Level, error: i32, message: &str| match level {
+            Level::Error => error!("[{error}] {message}"),
+            Level::Warn => warn!("[{}] {}", error, message),
+            Level::Info => info!("[{}] {}", error, message),
+            Level::Debug => debug!("[{}] {}", error, message),
+            Level::Trace => trace!("[{}] {}", error, message),
+        })
+    );
+
+    args.file
         .iter()
         .flat_map(|file_name| {
             if let Some(pos) = file_name.find('@') {
+                // FIXME: this will fail if padding is wider than one digit!
                 let padding = if let Some(number) = file_name.get(pos + 1..pos + 2) {
                     number.parse::<usize>().unwrap_or(0)
                 } else {
@@ -116,6 +129,9 @@ pub fn render(args: Render) -> Result<()> {
                             format!("{frame}")
                         };
 
+                        // We do not check if the file exists at all.
+                        // the `Context::evaluate()`` call will fail on the
+                        // side of the renderer later, if it doesn't.
                         file_name.replace(frame_number_placeholder, &frame_string)
                     })
                     .collect()
@@ -123,49 +139,69 @@ pub fn render(args: Render) -> Result<()> {
                 vec![file_name.clone()]
             }
         })
-        .collect();
+        .filter_map(|file_name| {
+            let mut ctx_args = vec![error_handler_arg.clone()];
 
-    let cloud = args.cloud;
+            if cloud {
+                ctx_args.push(nsi::integer!("cloud", true as _));
+                let file_name = file_name.clone();
+                let args = args.clone();
 
-    for file_name in file_names {
-        if cloud {
-            let file_name = file_name.clone();
-            let args = args.clone();
+                Some(thread::spawn(move || {
+                    render_file(&file_name, &args, ctx_args)?;
 
-            thread::spawn(move || {
-                render_file(&file_name, &args)?;
+                    Ok::<(), Error>(())
+                }))
+            } else {
+                if let Some(ref collective) = args.collective {
+                    ctx_args.push(nsi::string!("collective", collective.as_str()));
+                }
 
-                Ok::<(), Error>(())
-            });
-        } else {
-            render_file(&file_name, &args)?;
-        }
-    }
+                // FIXME: unwrap()
+                render_file(&file_name, &args, ctx_args).unwrap();
+
+                None
+            }
+        })
+        // Wait for render threads to finish.
+        .for_each(|handle| {
+            if let Err(error) = handle.join().unwrap() {
+                error!("{}", error);
+            }
+        });
 
     Ok(())
 }
 
-pub fn render_file(file_name: &str, args: &Render) -> Result<()> {
-    let error_handler =
-        nsi::ErrorCallback::new(|level: Level, error: i32, message: &str| match level {
-            Level::Error => error!("[{error}] {message}"),
-            Level::Warn => warn!("[{}] {}", error, message),
-            Level::Info => info!("[{}] {}", error, message),
-            Level::Debug => debug!("[{}] {}", error, message),
-            Level::Trace => trace!("[{}] {}", error, message),
-        });
+pub fn render_file(file_name: &str, args: &Render, ctx_args: nsi::ArgVec) -> Result<()> {
+    let ctx = nsi::Context::new(Some(&ctx_args)).ok_or(anyhow!("Error creating NSI context."))?;
 
-    let ctx = {
-        let mut ctx_args = vec![nsi::callback!("errorhandler", error_handler)];
+    if args.progress {
+        ctx.set_attribute(
+            nsi::node::GLOBAL,
+            &[nsi::integer!("statistics.progress", 1)],
+        );
+    }
 
-        if args.cloud {
-            ctx_args.push(nsi::integer!("cloud", true as _));
-        } else if let Some(ref collective) = args.collective {
-            ctx_args.push(nsi::string!("collective", collective.as_str()));
+    if 0 < args.statistics {
+        match args.statistics {
+            1 => ctx.set_attribute(
+                nsi::node::GLOBAL,
+                &[nsi::integer!("statistics.embedinimage", 1)],
+            ),
+            _ => ctx.set_attribute(
+                nsi::node::GLOBAL,
+                &[nsi::string!("statistics.filename", "")],
+            ),
         }
+    }
 
-        nsi::Context::new(Some(&ctx_args)).ok_or(anyhow!("Error creating NSI context."))?
-    };
+    if let Some(thread_count) = args.threads {
+        ctx.set_attribute(
+            nsi::node::GLOBAL,
+            &[nsi::integer!("numberofthreads", thread_count as _)],
+        );
+    }
 
     evaluate_file(&ctx, file_name, args.dry_run);
 

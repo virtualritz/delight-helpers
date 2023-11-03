@@ -36,6 +36,8 @@ fn _sanitize_path_to_unc(path: &str) -> String {
 fn run() -> Result<()> {
     let cli = build_cli();
 
+    // Setup logging ==========================================================
+
     // Get log level from cli.
     let log_level = match cli.verbose {
         0 => log::LevelFilter::Error,
@@ -65,6 +67,10 @@ fn run() -> Result<()> {
         .level(log_level)
         .apply()?;
 
+    #[cfg(target_os = "windows")]
+    rlimit::setmaxstdio(8192).unwrap_or_else(|| warning!("Could not set maximum of open files"));
+
+    // Execute subcommand =====================================================
     match cli.command {
         Command::Render(args) => render(args),
         Command::Cat(args) => cat(args),
@@ -101,10 +107,12 @@ fn cat(args: Cat) -> Result<()> {
         }
 
         let mut expand = vec!["apistream"];
+
         if args.expand {
             expand.push("lua");
             expand.push("dynamiclibrary");
         }
+
         ctx_args.push(nsi::strings!("executeprocedurals", &expand));
 
         let ctx = nsi::Context::new(Some(&ctx_args)).unwrap();
@@ -118,8 +126,10 @@ fn cat(args: Cat) -> Result<()> {
                     "apistream"
                 }
             ),
+            nsi::integer!("nostream", true as _),
             nsi::string!("filename", file_name.as_str()),
         ]);
     }
+
     Ok(())
 }

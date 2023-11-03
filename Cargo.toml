@@ -1,17 +1,24 @@
 [package]
 name = "delight-helpers"
-version = "0.1.7"
+version = "0.1.8"
 authors = ["Moritz Moeller <virtualritz@protonmail.com>"]
 edition = "2021"
-keywords = ["graphics", "rendering", "3d", "ray-tracing", "scene-description"]
+keywords = ["graphics", "rendering", "3d", "ray-tracing"]
 categories = ["command-line-utilities", "graphics", "multimedia::images", "rendering"]
 license = "Apache-2.0 OR BSD-3-Clause OR MIT OR Zlib"
 description = "Command line utilities/helpers for the 3Delight renderer."
-exclude = [".github/**/*", "crates/**/*"]
+exclude = [".github/**/*", "crates/**/*", "cpp/**/*"]
 readme = "README.md"
 homepage = "https://www.3delight.com/"
 documentation = "https://docs.rs/delight-helpers/"
 repository = "https://github.com/virtualritz/delight-helpers/"
+
+[workspace]
+members = [
+    "crates/delight-sys",
+    "crates/delight"
+]
+
 
 [[bin]]
 name = "rdl"
@@ -22,18 +29,22 @@ path = "src/rdl.rs"
 #path = "src/tdl.rs"
 
 [dependencies]
-anyhow = "1.0.71"
-clap = { version = "4.2", features = ["derive", "color", "suggestions", "unicode", "wrap_help"] }
-clap_complete = "4.2"
-fern = { version = "0.6.2", features = ["colored"] }
+anyhow = "1"
+clap = { version = "4.4", features = ["derive", "color", "suggestions", "unicode", "wrap_help"] }
+clap_complete = "4.4"
+fern = { version = "0.6", features = ["colored"] }
 frame-sequence = "0.1"
-human-panic = "1.1"
-log = { version = "0.4.17", features = ["std"] }
-notify = "5.1.0"
-nsi = { version = "0.7"} #, path = "../nsi-old" }
+human-panic = "1.2"
+lazy_static = "1.4"
+log = { version = "0.4", features = ["std"] }
+notify = "6.1"
+nsi = { version = "0.8", path = "../nsi-old" }
+
+[target.'cfg(windows)'.dependencies]
+rlimit = "0.10"
 
 [build-dependencies]
-bindgen = "0.65.1"
+bindgen = "0.69"
 
 [profile.release]
 lto = true

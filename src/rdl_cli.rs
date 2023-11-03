@@ -10,7 +10,7 @@ pub fn build_cli() -> Cli {
     name = "rdl",
     about = "Renders or filters NSI streams or Lua NSI files with 3Delight",
     after_long_help = "",
-    max_term_width = 80
+    max_term_width = 120
 )]
 pub struct Cli {
     #[arg(
@@ -30,6 +30,7 @@ pub enum Command {
     Render(Render),
     Cat(Cat),
     Watch(Watch),
+    //Usd(Usd),
     #[command(
         name = "generate-completions",
         about = "Generate completion scripts for various shells",
@@ -44,44 +45,6 @@ pub enum Command {
     },
 }
 
-#[derive(Parser)]
-#[command(
-    arg_required_else_help = true,
-    about = "Watch folder(s) for new files and render them with 3Delight",
-//    help_message = "Print this/a long help message."
-)]
-pub struct Watch {
-    #[arg(
-        name = "FOLDER",
-        index = 1,
-        help = "The FOLDER(s) to watch for NSI files(s) to render"
-    )]
-    pub folder: Vec<String>,
-
-    #[arg(
-        long,
-        short = 'C',
-        conflicts_with = "cloud",
-        help = "Render using the the given 3Delight COLLECTIVE"
-    )]
-    pub collective: Option<String>,
-
-    #[arg(
-        long,
-        short,
-        conflicts_with = "collective",
-        help = "Render using 3Delight Cloud"
-    )]
-    pub cloud: bool,
-
-    #[arg(
-        long,
-        short,
-        help = "Recurse into the given folder(s)",
-        long_help = "Recurse into the given folder(s) when looking for new files to render"
-    )]
-    pub recursive: bool,
-}
 
 #[derive(Parser, Clone)]
 #[command(
@@ -129,6 +92,20 @@ pub struct Render {
     )]
     pub display: bool,
     */
+    #[arg(long, short, help = "Print rendering progress at each bucket")]
+    pub progress: bool,
+
+    #[arg(
+        long,
+        short,
+        action = clap::ArgAction::Count,
+        help = "Generate statistics: (-s, -ss)",
+        long_help = "Statistics level\n\
+        -s   ➞  embed in image\n\
+        -ss  ➞  embed in image & print to stdout",
+    )]
+    pub statistics: u8,
+
     #[arg(
         long,
         short,
@@ -196,19 +173,19 @@ pub struct Render {
 //    help_message = "Print this help message."
 )]
 pub struct Cat {
-    #[arg(long, short = 'b', help = "Encode NSI stream in binary format")]
+    #[arg(long, short, help = "Encode NSI stream in binary format")]
     pub binary: bool,
 
-    #[arg(long, short = 'g', help = "Compress NSI stream using GNU zip format")]
+    #[arg(long, short, help = "Compress NSI stream using GNU zip format")]
     pub gzip: bool,
 
-    #[arg(long, short = 'e', help = "Expand archives and procedurals")]
+    #[arg(long, short, help = "Expand archives and procedurals")]
     pub expand: bool,
 
-    #[arg(long = "expand-archives", help = "Expand archives")]
+    #[arg(long = "expand-archives", short = 'a', help = "Expand archives")]
     pub expand_archives: bool,
 
-    #[arg(long = "expand-procedurals", help = "Expand procedurals")]
+    #[arg(long = "expand-procedurals", short = 'p', help = "Expand procedurals")]
     pub expand_procedurals: bool,
 
     #[arg(name = "FILE", help = "The NSI FILE(s) to dump")]
@@ -216,9 +193,48 @@ pub struct Cat {
 
     #[arg(
         long,
-        short = 'o',
+        short,
         help = "Dump NSI stream to OUTPUT",
         long_help = "Dump NSI stream to OUTPUT instead of stdout"
     )]
     pub output: Option<String>,
+}
+
+#[derive(Parser)]
+#[command(
+    arg_required_else_help = true,
+    about = "Watch folder(s) for new files and render them with 3Delight",
+//    help_message = "Print this/a long help message."
+)]
+pub struct Watch {
+    #[arg(
+        name = "FOLDER",
+        index = 1,
+        help = "The FOLDER(s) to watch for NSI files(s) to render"
+    )]
+    pub folder: Vec<String>,
+
+    #[arg(
+        long,
+        short = 'C',
+        conflicts_with = "cloud",
+        help = "Render using the the given 3Delight COLLECTIVE"
+    )]
+    pub collective: Option<String>,
+
+    #[arg(
+        long,
+        short,
+        conflicts_with = "collective",
+        help = "Render using 3Delight Cloud"
+    )]
+    pub cloud: bool,
+
+    #[arg(
+        long,
+        short,
+        help = "Recurse into the given folder(s)",
+        long_help = "Recurse into the given folder(s) when looking for new files to render"
+    )]
+    pub recursive: bool,
 }
