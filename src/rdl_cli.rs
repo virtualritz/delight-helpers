@@ -8,6 +8,7 @@ pub fn build_cli() -> Cli {
 #[derive(Parser)]
 #[command(
     name = "rdl",
+    bin_name = "rdl",
     about = "Renders or filters NSI streams or Lua NSI files with 3Delight",
     after_long_help = "",
     max_term_width = 120
@@ -39,12 +40,18 @@ pub enum Command {
     GenerateCompletions {
         #[arg(
             help = "The shell to generate completions for",
-            value_parser = clap::builder::PossibleValuesParser::new(["bash", "fish", "zsh", "powershell", "elvish"])
+            value_parser = clap::builder::PossibleValuesParser::new([
+                "bash",
+                "elvish",
+                "fig",
+                "fish",
+                "nushell",
+                "powershell",
+                "zsh"])
         )]
         shell: String,
     },
 }
-
 
 #[derive(Parser, Clone)]
 #[command(
@@ -60,7 +67,8 @@ pub struct Render {
         long_help = "The NSI FILE(s) to render\n\
             Frame number placeholders are specified using @[padding]:\n\
             foo.@.nsi   ➞  foo.1.nsi, foo.2.nsi, …\n\
-            foo.@4.nsi  ➞  foo.0001.nsi, foo.0002.nsi, …"
+            foo.@4.nsi  ➞  foo.0001.nsi, foo.0002.nsi, …",
+        value_hint = clap::ValueHint::FilePath
     )]
     pub file: Vec<String>,
 
@@ -188,7 +196,11 @@ pub struct Cat {
     #[arg(long = "expand-procedurals", short = 'p', help = "Expand procedurals")]
     pub expand_procedurals: bool,
 
-    #[arg(name = "FILE", help = "The NSI FILE(s) to dump")]
+    #[arg(
+        name = "FILE",
+        help = "The NSI FILE to dump",
+        value_hint = clap::ValueHint::FilePath
+    )]
     pub file: Option<String>,
 
     #[arg(
@@ -210,7 +222,8 @@ pub struct Watch {
     #[arg(
         name = "FOLDER",
         index = 1,
-        help = "The FOLDER(s) to watch for NSI files(s) to render"
+        help = "The FOLDER(s) to watch for NSI files(s) to render",
+        value_hint = clap::ValueHint::DirPath
     )]
     pub folder: Vec<String>,
 

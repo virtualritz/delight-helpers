@@ -205,6 +205,8 @@ pub fn render_file(file_name: &str, args: &Render, ctx_args: nsi::ArgVec) -> Res
 
     evaluate_file(&ctx, file_name, args.dry_run);
 
+    debug!("Done evaluating files");
+
     if args.force_render {
         ctx.render_control(nsi::Action::Start, None);
     }
@@ -214,20 +216,23 @@ pub fn render_file(file_name: &str, args: &Render, ctx_args: nsi::ArgVec) -> Res
     Ok(())
 }
 
+// FIXME: this
 pub fn evaluate_file(ctx: &nsi::Context, file_name: &str, dry_run: bool) {
+    info!("Rendering '{}'", file_name);
+
     if dry_run {
-        info!("[rdl] Rendering `{}`.", file_name);
-    } else {
-        ctx.evaluate(&[
-            nsi::string!(
-                "type",
-                if file_name.ends_with(".lua") {
-                    "lua"
-                } else {
-                    "apistream"
-                }
-            ),
-            nsi::string!("filename", file_name),
-        ]);
+        return;
     }
+
+    ctx.evaluate(&[
+        nsi::string!(
+            "type",
+            if file_name.ends_with(".lua") {
+                "lua"
+            } else {
+                "apistream"
+            }
+        ),
+        nsi::string!("filename", file_name),
+    ]);
 }

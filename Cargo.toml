@@ -15,15 +15,13 @@ repository = "https://github.com/virtualritz/delight-helpers/"
 
 [workspace]
 members = [
-    "crates/delight-sys",
     "crates/delight"
-]
-
+,
+    "crates/delight-sys"]
 
 [[bin]]
 name = "rdl"
 path = "src/rdl.rs"
-
 #[[bin]]
 #name = "tdl"
 #path = "src/tdl.rs"
@@ -32,6 +30,8 @@ path = "src/rdl.rs"
 anyhow = "1"
 clap = { version = "4.4", features = ["derive", "color", "suggestions", "unicode", "wrap_help"] }
 clap_complete = "4.4"
+clap_complete_fig = "4.4"
+clap_complete_nushell = "4.4"
 fern = { version = "0.6", features = ["colored"] }
 frame-sequence = "0.1"
 human-panic = "1.2"

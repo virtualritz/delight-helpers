@@ -40,15 +40,14 @@ fn run() -> Result<()> {
 
     // Get log level from cli.
     let log_level = match cli.verbose {
-        0 => log::LevelFilter::Error,
-        1 => log::LevelFilter::Warn,
-        2 => log::LevelFilter::Info,
+        0 => log::LevelFilter::Warn,
+        1 => log::LevelFilter::Info,
         #[cfg(debug_assertions)]
-        3 => log::LevelFilter::Debug,
+        2 => log::LevelFilter::Debug,
         #[cfg(debug_assertions)]
         _ => log::LevelFilter::Trace,
         #[cfg(not(debug_assertions))]
-        _ => log::LevelFilter::Info,
+        _ => log::LevelFilter::Error,
     };
 
     let colors = ColoredLevelConfig::new().debug(Color::Magenta);
@@ -57,9 +56,9 @@ fn run() -> Result<()> {
         .chain(std::io::stdout())
         .format(move |out, message, record| {
             out.finish(format_args!(
-                "[{}] [rdl] {}",
+                "{:_<20} [rdl] {}",
                 // This will color the log level only, not the whole line. Just a touch.
-                colors.color(record.level()),
+                format_args!("[{}]", colors.color(record.level())),
                 //record.target(),
                 message
             ))
@@ -83,7 +82,19 @@ fn generate_completions(shell: String) -> Result<()> {
     match shell.as_str() {
         "bash" => generate(Bash, &mut Cli::command(), "rdl", &mut io::stdout()),
         "elvish" => generate(Elvish, &mut Cli::command(), "rdl", &mut io::stdout()),
+        "fig" => clap_complete::generate(
+            clap_complete_fig::Fig,
+            &mut Cli::command(),
+            "rdl",
+            &mut io::stdout(),
+        ),
         "fish" => generate(Fish, &mut Cli::command(), "rdl", &mut io::stdout()),
+        "nushell" => clap_complete::generate(
+            clap_complete_nushell::Nushell,
+            &mut Cli::command(),
+            "rdl",
+            &mut io::stdout(),
+        ),
         "powershell" => generate(PowerShell, &mut Cli::command(), "rdl", &mut io::stdout()),
         "zsh" => generate(Zsh, &mut Cli::command(), "rdl", &mut io::stdout()),
         _ => return Err(anyhow!("Unsupported shell '{shell}'")),
@@ -109,8 +120,8 @@ fn cat(args: Cat) -> Result<()> {
         let mut expand = vec!["apistream"];
 
         if args.expand {
-            expand.push("lua");
             expand.push("dynamiclibrary");
+            expand.push("RiProcDynamicLoad");
         }
 
         ctx_args.push(nsi::strings!("executeprocedurals", &expand));
