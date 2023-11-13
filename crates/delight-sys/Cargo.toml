@@ -1,0 +1,18 @@
+[package]
+name = "delight-sys"
+version = "0.1.0"
+edition = "2021"
+
+[features]
+default = ["dlopen2"]
+# Specify this to link agains lib3delight
+link_lib3delight = []
+# Manually initialize API
+manual_init = []
+
+[dependencies]
+lazy_static = "1.4"
+dlopen2 = { version = "0.6", optional = true }
+
+[build-dependencies]
+bindgen = "0.69"

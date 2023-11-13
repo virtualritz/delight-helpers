@@ -8,7 +8,15 @@ use fern::colors::{Color, ColoredLevelConfig};
 use human_panic::setup_panic;
 use std::io;
 
-const _VERSION: &str = env!("CARGO_PKG_VERSION");
+mod built_info {
+    include!(concat!(env!("OUT_DIR"), "/built.rs"));
+}
+
+#[cfg(target_os = "linux")]
+mod glibc {
+    include!(concat!(env!("OUT_DIR"), "/glibc_version.rs"));
+}
+
 
 mod rdl_cli;
 use rdl_cli::*;
@@ -74,6 +82,7 @@ fn run() -> Result<()> {
         Command::Render(args) => render(args),
         Command::Cat(args) => cat(args),
         Command::Watch(args) => watch(args),
+        Command::Version => version(),
         Command::GenerateCompletions { shell } => generate_completions(shell),
     }
 }
@@ -99,6 +108,38 @@ fn generate_completions(shell: String) -> Result<()> {
         "zsh" => generate(Zsh, &mut Cli::command(), "rdl", &mut io::stdout()),
         _ => return Err(anyhow!("Unsupported shell '{shell}'")),
     }
+
+    Ok(())
+}
+
+fn version() -> Result<()> {
+    eprintln!(
+        "rdl {}\n\
+        compiled with {}",
+        //env!("CARGO_PACKAGE_VERSION"),
+        built_info::PKG_VERSION,
+        built_info::RUSTC_VERSION,
+    );
+
+    #[cfg(target_os = "linux")]
+    {
+        use glibc_version::glibc_version;
+
+        let glibc = glibc_version().unwrap(); //map_err(|e| Err(anyhow!("{}", e)))?;
+
+        eprintln!(
+            "built against {} and running with {}.{}",
+            glibc::GLIBC_VERSION,
+            glibc.major, glibc.minor
+        );
+    }
+
+    eprintln!(
+        "using lib3delight {}\n\
+        lib3delight is {}",
+        delight::version(),
+        delight::copyright(),
+    );
 
     Ok(())
 }

@@ -19,7 +19,7 @@ pub struct Cli {
         long,
         short,
         action = clap::ArgAction::Count,
-        help = "Verbosity level ('-v', '-vv', '-vvv', etc.)",
+        help = "Verbosity level (-v verbose, -vv very verbose, etc.)",
     )]
     pub verbose: u8,
     #[command(subcommand)]
@@ -31,6 +31,12 @@ pub enum Command {
     Render(Render),
     Cat(Cat),
     Watch(Watch),
+    #[command(
+        name = "version",
+        about = "Display version information",
+        display_order = 9998
+    )]
+    Version,
     //Usd(Usd),
     #[command(
         name = "generate-completions",
