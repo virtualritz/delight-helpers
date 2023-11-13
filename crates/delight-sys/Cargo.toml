@@ -11,8 +11,8 @@ link_lib3delight = []
 manual_init = []
 
 [dependencies]
-lazy_static = "1.4"
 dlopen2 = { version = "0.6", optional = true }
+lazy_static = "1.4"
 
 [build-dependencies]
 bindgen = "0.69"
