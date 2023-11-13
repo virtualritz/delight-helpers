@@ -12,7 +12,7 @@ mod built_info {
     include!(concat!(env!("OUT_DIR"), "/built.rs"));
 }
 
-#[cfg(target_os = "linux")]
+#[cfg(all(target_os = "linux", target_env = "gnu"))]
 mod glibc {
     include!(concat!(env!("OUT_DIR"), "/glibc_version.rs"));
 }
@@ -125,11 +125,9 @@ fn version() -> Result<()> {
         built_info::RUSTC_VERSION,
     );
 
-    #[cfg(target_os = "linux")]
+    #[cfg(all(target_os = "linux", target_env = "gnu"))]
     {
-        use glibc_version::glibc_version;
-
-        let glibc = glibc_version().map_err(|e| anyhow!("{e}"))?;
+        let glibc = glibc_version::get_version().map_err(|e| anyhow!("{e}"))?;
 
         eprintln!(
             "built against {} and running with {}.{}",

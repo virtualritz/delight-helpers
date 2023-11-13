@@ -5,7 +5,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     #[cfg(all(target_os = "linux", target_env = "gnu"))]
     {
-        let glibc = glibc_version::glibc_version().unwrap();
+        let glibc = glibc_version::get_version().unwrap();
         let dest_path =
             Path::new(&env::var("OUT_DIR").expect("OUT_DIR not set")).join("glibc_version.rs");
         let mut glibc_file = File::create(dest_path)?;
