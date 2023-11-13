@@ -49,8 +49,10 @@ pub enum Command {
             value_parser = clap::builder::PossibleValuesParser::new([
                 "bash",
                 "elvish",
+                #[cfg(feature = "fig")]
                 "fig",
                 "fish",
+                #[cfg(feature = "nushell")]
                 "nushell",
                 "powershell",
                 "zsh"])
@@ -196,12 +198,11 @@ pub struct Cat {
     #[arg(long, short, help = "Expand archives and procedurals")]
     pub expand: bool,
 
-    #[arg(long = "expand-archives", short = 'a', help = "Expand archives")]
-    pub expand_archives: bool,
+    //#[arg(long = "expand-archives", short = 'a', help = "Expand archives")]
+    //pub expand_archives: bool,
 
-    #[arg(long = "expand-procedurals", short = 'p', help = "Expand procedurals")]
-    pub expand_procedurals: bool,
-
+    //#[arg(long = "expand-procedurals", short = 'p', help = "Expand procedurals")]
+    //pub expand_procedurals: bool,
     #[arg(
         name = "FILE",
         help = "The NSI FILE to dump",

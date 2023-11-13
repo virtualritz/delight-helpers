@@ -216,7 +216,6 @@ pub fn render_file(file_name: &str, args: &Render, ctx_args: nsi::ArgVec) -> Res
     Ok(())
 }
 
-// FIXME: this
 pub fn evaluate_file(ctx: &nsi::Context, file_name: &str, dry_run: bool) {
     info!("Rendering '{}'", file_name);
 

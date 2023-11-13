@@ -17,7 +17,6 @@ mod glibc {
     include!(concat!(env!("OUT_DIR"), "/glibc_version.rs"));
 }
 
-
 mod rdl_cli;
 use rdl_cli::*;
 
@@ -64,11 +63,14 @@ fn run() -> Result<()> {
         .chain(std::io::stdout())
         .format(move |out, message, record| {
             out.finish(format_args!(
-                "{:_<20} [rdl] {}",
-                // This will color the log level only, not the whole line. Just a touch.
-                format_args!("[{}]", colors.color(record.level())),
-                //record.target(),
-                message
+                "{}",
+                format!(
+                    "{: <16} [rdl] {}",
+                    // This will color the log level only, not the whole line. Just a touch.
+                    format!("[{}]", colors.color(record.level())),
+                    //record.target(),
+                    message
+                )
             ))
         })
         .level(log_level)
@@ -91,6 +93,7 @@ fn generate_completions(shell: String) -> Result<()> {
     match shell.as_str() {
         "bash" => generate(Bash, &mut Cli::command(), "rdl", &mut io::stdout()),
         "elvish" => generate(Elvish, &mut Cli::command(), "rdl", &mut io::stdout()),
+        #[cfg(feature = "fig")]
         "fig" => clap_complete::generate(
             clap_complete_fig::Fig,
             &mut Cli::command(),
@@ -98,6 +101,7 @@ fn generate_completions(shell: String) -> Result<()> {
             &mut io::stdout(),
         ),
         "fish" => generate(Fish, &mut Cli::command(), "rdl", &mut io::stdout()),
+        #[cfg(feature = "nushell")]
         "nushell" => clap_complete::generate(
             clap_complete_nushell::Nushell,
             &mut Cli::command(),
@@ -125,12 +129,13 @@ fn version() -> Result<()> {
     {
         use glibc_version::glibc_version;
 
-        let glibc = glibc_version().unwrap(); //map_err(|e| Err(anyhow!("{}", e)))?;
+        let glibc = glibc_version().map_err(|e| anyhow!("{e}"))?;
 
         eprintln!(
             "built against {} and running with {}.{}",
             glibc::GLIBC_VERSION,
-            glibc.major, glibc.minor
+            glibc.major,
+            glibc.minor
         );
     }
 
@@ -146,7 +151,7 @@ fn version() -> Result<()> {
 
 fn cat(args: Cat) -> Result<()> {
     if let Some(file_name) = &args.file {
-        let path = args.output.clone().unwrap_or("stdout".to_string());
+        let path = args.output.clone().unwrap_or_else(|| "stdout".to_string());
 
         let mut ctx_args = vec![nsi::string!("streamfilename", path.as_str())];
 
