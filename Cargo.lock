@@ -405,6 +405,12 @@ dependencies = [
 [[package]]
 name = "delight-build"
 version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "94a47305de2f9b884ca81ef1478c639375bf0f407da76f2ea03e08be7f4527ef"
+
+[[package]]
+name = "delight-build"
+version = "0.1.1"
 dependencies = [
  "reqwest",
 ]
@@ -436,7 +442,7 @@ name = "delight-sys"
 version = "0.1.0"
 dependencies = [
  "bindgen 0.69.1",
- "delight-build",
+ "delight-build 0.1.0",
  "dlopen2",
  "lazy_static",
 ]

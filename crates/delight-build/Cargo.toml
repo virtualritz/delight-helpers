@@ -1,12 +1,12 @@
 [package]
 name = "delight-build"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Moritz Moeller <virtualritz@protonmail.com>"]
 edition = "2021"
-keywords = ["graphics", "rendering", "3d", "ray-tracing", "scene-description"]
+keywords = ["graphics", "linking", "rendering", "3d", "ray-tracing",]
 categories = ["graphics", "multimedia::images", "rendering::graphics-api"]
 license = "MIT OR Apache-2.0 OR Zlib"
-description = "Build time helpers for 3Delight-related crates"
+description = "Build-time helpers for 3Delight-related crates"
 readme = "README.md"
 homepage = "https://www.3delight.com/"
 documentation = "https://docs.rs/delight-build/"
