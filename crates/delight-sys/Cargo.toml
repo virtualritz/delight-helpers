@@ -6,9 +6,9 @@ edition = "2021"
 [features]
 default = ["dlopen2"]
 # Specify this to link agains lib3delight
-link_lib3delight = []
-# Manually initialize API
-manual_init = []
+link_lib3delight = ["delight-build/link_lib3delight"]
+# Download an outdated version of lib3delight during build
+download_lib3delight = ["delight-build/download_lib3delight"]
 
 [dependencies]
 dlopen2 = { version = "0.6", optional = true }
@@ -16,3 +16,4 @@ lazy_static = "1.4"
 
 [build-dependencies]
 bindgen = "0.69"
+delight-build = { version = "0.1.0", path = "../delight-build" }

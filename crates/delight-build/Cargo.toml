@@ -1,0 +1,20 @@
+[package]
+name = "delight-build"
+version = "0.1.0"
+authors = ["Moritz Moeller <virtualritz@protonmail.com>"]
+edition = "2021"
+keywords = ["graphics", "rendering", "3d", "ray-tracing", "scene-description"]
+categories = ["graphics", "multimedia::images", "rendering::graphics-api"]
+license = "MIT OR Apache-2.0 OR Zlib"
+description = "Build time helpers for 3Delight-related crates"
+readme = "README.md"
+homepage = "https://www.3delight.com/"
+documentation = "https://docs.rs/delight-build/"
+repository = "https://github.com/virtualritz/delight-helpers/"
+
+[features]
+link_lib3delight = []
+download_lib3delight = []
+
+[dependencies]
+reqwest = { version = "0.11", features = ["blocking"], optional = true }
