@@ -27,7 +27,7 @@
 //!
 //! ## Cargo Features
 //!
-//! * [`download_lib3delight`] -- Fetches the dynamic library version of
+//! * `download_lib3delight` -- Fetches the dynamic library version of
 //!   3Delight for Linux, macOS or Windows. This can be used as a fallback, to
 //!   build against, if you do not have the renderer installed on your system.
 //!   But it is an old version of 3Delight and foremost a CI feature.
@@ -36,11 +36,14 @@
 //!   platform & install it. This will set the `DELIGHT` environment variable
 //!   that the build script is looking for to find a locally installed library
 //!   to link against.
-//!   This will also install 3Delight Display which you can render to,
+//!
+//!   This will also install *3Delight Display* which you can render to,
 //!   progressively -- useful for debugging.
+//!
 //!   The free version renders with up to 12 cores.
 //!
-//! * [`link_lib3delight`] -- Statucally link against lib3dlight during build.
+//! * `link_lib3delight` -- Statucally link against `lib3dlight`` during build.
+//!
 //!   This requires a 3Delight installation unless `download_lib3delight` is
 //!   set. See also next section.
 //!
@@ -63,9 +66,14 @@
 //!
 //!   * The feature is called `link_lib3delight`. You should disable default
 //!     features (they are not needed/used) in this case:
+//!
 //!     ```toml
 //!     [dependencies]
-//!     delight-sys = { version = "0.8", default-features = false, features = ["link_lib3delight"] }
+//!     delight-sys = {
+//!         version = "0.8",
+//!         default-features = false,
+//!         features = ["link_lib3delight"]
+//!     }
 //!     ```
 //!
 //!   * `lib3delight` becomes a dependency. If it cannot be found by the

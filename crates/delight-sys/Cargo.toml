@@ -1,7 +1,17 @@
 [package]
 name = "delight-sys"
 version = "0.1.0"
+authors = ["Moritz Moeller <virtualritz@protonmail.com>"]
 edition = "2021"
+keywords = ["graphics", "rendering", "3d", "ray-tracing"]
+categories = ["graphics", "multimedia::images", "rendering"]
+license = "Apache-2.0 OR BSD-3-Clause OR MIT OR Zlib"
+description = "Utilities functions for the 3Delight renderer."
+exclude = [".github/**/*", "crates/**/*", "cpp/**/*"]
+readme = "README.md"
+homepage = "https://www.3delight.com/"
+documentation = "https://docs.rs/delight-sys/"
+repository = "https://github.com/virtualritz/delight-helpers/"
 
 [features]
 default = ["dlopen2"]
@@ -16,4 +26,4 @@ lazy_static = "1.4"
 
 [build-dependencies]
 bindgen = "0.69"
-delight-build = { version = "0.1.0", path = "../delight-build" }
+delight-build = "0.1"
