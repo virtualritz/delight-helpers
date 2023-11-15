@@ -34,7 +34,7 @@ clap = { version = "4.4", features = ["derive", "color", "suggestions", "unicode
 clap_complete = "4.4"
 clap_complete_fig = "4.4"
 clap_complete_nushell = "4.4"
-delight = { version = "*", path = "crates/delight" }
+delight = "0.1.0"
 fern = { version = "0.6", features = ["colored"] }
 frame-sequence = "0.1"
 glibc_version = "0.1"

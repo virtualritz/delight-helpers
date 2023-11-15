@@ -1,8 +1,17 @@
 [package]
 name = "delight"
 version = "0.1.0"
+authors = ["Moritz Moeller <virtualritz@protonmail.com>"]
 edition = "2021"
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+keywords = ["graphics", "rendering", "3d", "ray-tracing"]
+categories = ["command-line-utilities", "graphics", "multimedia::images", "rendering"]
+license = "Apache-2.0 OR BSD-3-Clause OR MIT OR Zlib"
+description = "Command line utilities/helpers for the 3Delight renderer."
+exclude = [".github/**/*", "crates/**/*", "cpp/**/*"]
+readme = "README.md"
+homepage = "https://www.3delight.com/"
+documentation = "https://docs.rs/delight/"
+repository = "https://github.com/virtualritz/delight-helpers/"
 
 [dependencies]
-delight-sys = { version = "0.1.0", path = "../delight-sys" }
+delight-sys = "0.1.0"
