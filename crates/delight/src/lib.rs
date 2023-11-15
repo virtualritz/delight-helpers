@@ -1,5 +1,5 @@
-//! Utility functions for working with `lib3delight`.
-
+//! Utility functions for working with library version of the
+//! [*3Delight*](https://www.3delight.com) renderer, `lib3delight`.
 use delight_sys::{Api, DL_API};
 use std::{ffi::CStr, path::PathBuf};
 
