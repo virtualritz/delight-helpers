@@ -397,25 +397,19 @@ dependencies = [
 
 [[package]]
 name = "delight"
-version = "0.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "817cc25f9c722215e3ceabe54e1411b366e6e07e9b8ddad1b3b02e6077b75074"
+version = "0.1.1"
 dependencies = [
- "delight-sys 0.1.1",
+ "delight-sys 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
 name = "delight"
 version = "0.1.1"
-dependencies = [
- "delight-sys 0.1.1",
-]
-
-[[package]]
-name = "delight-build"
-version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "94a47305de2f9b884ca81ef1478c639375bf0f407da76f2ea03e08be7f4527ef"
+checksum = "bf1f9141085642b51ce941cd685586ae588b3b5165159380e6182621ca3dcfc9"
+dependencies = [
+ "delight-sys 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
+]
 
 [[package]]
 name = "delight-build"
@@ -425,8 +419,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "delight-build"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e8d0e6c5d2f68d31ee433cef160f64d80925a542bd1a4c40177229184c8328bb"
+
+[[package]]
 name = "delight-helpers"
-version = "0.1.8"
+version = "0.1.9"
 dependencies = [
  "anyhow",
  "built",
@@ -434,7 +434,7 @@ dependencies = [
  "clap_complete",
  "clap_complete_fig",
  "clap_complete_nushell",
- "delight 0.1.0",
+ "delight 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "fern",
  "frame-sequence",
  "glibc_version",
@@ -448,12 +448,10 @@ dependencies = [
 
 [[package]]
 name = "delight-sys"
-version = "0.1.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1654728b083bb98ba848fd2d6628b1119038f9ddf185430d57ad9a61cde5a525"
+version = "0.1.2"
 dependencies = [
  "bindgen 0.69.1",
- "delight-build 0.1.0",
+ "delight-build 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "dlopen2",
  "lazy_static",
 ]
@@ -461,9 +459,11 @@ dependencies = [
 [[package]]
 name = "delight-sys"
 version = "0.1.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "31f78dd7cbced9126df5426842f49026016d3b00b2b7dfe0e99333723ba9c14b"
 dependencies = [
  "bindgen 0.69.1",
- "delight-build 0.1.0",
+ "delight-build 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "dlopen2",
  "lazy_static",
 ]
