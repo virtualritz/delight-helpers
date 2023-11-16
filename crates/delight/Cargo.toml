@@ -1,6 +1,6 @@
 [package]
 name = "delight"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Moritz Moeller <virtualritz@protonmail.com>"]
 edition = "2021"
 keywords = ["graphics", "rendering", "3d", "ray-tracing"]
@@ -13,5 +13,11 @@ homepage = "https://www.3delight.com/"
 documentation = "https://docs.rs/delight/"
 repository = "https://github.com/virtualritz/delight-helpers/"
 
+[features]
+# Specify this to link agains lib3delight
+link_lib3delight = ["delight-sys/link_lib3delight"]
+# Download an outdated version of lib3delight during build
+download_lib3delight = ["delight-sys/download_lib3delight"]
+
 [dependencies]
-delight-sys = "0.1.0"
+delight-sys = "0.1"

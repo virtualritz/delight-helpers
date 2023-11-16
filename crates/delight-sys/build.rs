@@ -10,15 +10,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Auto-generate Rust bindings for delight.h.
     println!("cargo:rerun-if-changed=include/wrapper.h");
 
-    let delight_include_path =
-        PathBuf::from(&env::var("DELIGHT").expect("$DELIGHT is not set")).join("include");
-
     // Build bindings
     let bindings = bindgen::Builder::default()
         .header("include/wrapper.h")
         .allowlist_type("Dl.*")
         .allowlist_function("Dl.*")
-        .clang_arg(format!("-I{}", delight_include_path.display()))
+        .clang_arg("-Iinclude")
         .generate()
         .expect("Unable to generate bindings");
 
