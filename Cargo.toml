@@ -1,6 +1,6 @@
 [package]
 name = "delight-helpers"
-version = "0.1.8"
+version = "0.1.9"
 authors = ["Moritz Moeller <virtualritz@protonmail.com>"]
 edition = "2021"
 keywords = ["graphics", "rendering", "3d", "ray-tracing"]
@@ -34,7 +34,7 @@ clap = { version = "4.4", features = ["derive", "color", "suggestions", "unicode
 clap_complete = "4.4"
 clap_complete_fig = "4.4"
 clap_complete_nushell = "4.4"
-delight = "0.1.0"
+delight = "0.1"
 fern = { version = "0.6", features = ["colored"] }
 frame-sequence = "0.1"
 glibc_version = "0.1"
