@@ -42,7 +42,7 @@
 //!
 //!   The free version renders with up to 12 cores.
 //!
-//! * `link_lib3delight` -- Statucally link against `lib3dlight`` during build.
+//! * `link_lib3delight` -- Statically link against `lib3dlight`` during build.
 //!
 //!   This requires a 3Delight installation unless `download_lib3delight` is
 //!   set. See also next section.

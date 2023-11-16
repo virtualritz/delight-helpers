@@ -26,7 +26,7 @@
 //!
 //!   The free version renders with up to 12 cores.
 //!
-//! * `link_lib3delight` -- Statucally link against `lib3dlight`` during build.
+//! * `link_lib3delight` -- Statically link against `lib3dlight`` during build.
 //!
 //!   This requires a 3Delight installation unless `download_lib3delight` is
 //!   set. See also next section.
@@ -101,7 +101,7 @@ pub fn install_root() -> PathBuf {
     )
 }
 
-/// Returns `true`` if the free version of the 3Delight library is being used.
+/// Returns `true` if the free version of the 3Delight library is being used.
 pub fn is_free_library() -> bool {
     DL_API.DlIsFreeLibrary() != 0
 }
