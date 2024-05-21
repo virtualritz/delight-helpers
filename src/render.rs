@@ -130,7 +130,7 @@ pub fn render(args: Render) -> Result<()> {
                         };
 
                         // We do not check if the file exists at all.
-                        // the `Context::evaluate()`` call will fail on the
+                        // the `Context::evaluate()` call will fail on the
                         // side of the renderer later, if it doesn't.
                         file_name.replace(frame_number_placeholder, &frame_string)
                     })
@@ -147,6 +147,10 @@ pub fn render(args: Render) -> Result<()> {
                 let file_name = file_name.clone();
                 let args = args.clone();
 
+                // Spawn a new OS thread for sending this frame to the cloud.
+                //
+                // FIXME MAYBE: shall we switch to an async runtime and use
+                // green threads instead?
                 Some(thread::spawn(move || {
                     render_file(&file_name, &args, ctx_args)?;
 
@@ -157,8 +161,9 @@ pub fn render(args: Render) -> Result<()> {
                     ctx_args.push(nsi::string!("collective", collective.as_str()));
                 }
 
-                // FIXME: unwrap()
-                render_file(&file_name, &args, ctx_args).unwrap();
+                if let Err(error) = render_file(&file_name, &args, ctx_args) {
+                    error!("{}", error);
+                }
 
                 None
             }
@@ -205,7 +210,7 @@ pub fn render_file(file_name: &str, args: &Render, ctx_args: nsi::ArgVec) -> Res
 
     evaluate_file(&ctx, file_name, args.dry_run);
 
-    debug!("Done evaluating files");
+    debug!("Done evaluating file");
 
     if args.force_render {
         ctx.render_control(nsi::Action::Start, None);

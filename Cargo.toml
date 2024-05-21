@@ -28,21 +28,26 @@ path = "src/rdl.rs"
 #name = "tdl"
 #path = "src/tdl.rs"
 
+[features]
+default = []
+fig = ["clap_complete_fig"]
+nushell = ["clap_complete_nushell"]
+
 [dependencies]
 anyhow = "1"
-clap = { version = "4.4", features = ["derive", "color", "suggestions", "unicode", "wrap_help"] }
-clap_complete = "4.4"
-clap_complete_fig = "4.4"
-clap_complete_nushell = "4.4"
+clap = { version = "4", features = ["derive", "color", "suggestions", "unicode", "wrap_help"] }
+clap_complete = "4"
+clap_complete_fig = { version = "4", optional = true }
+clap_complete_nushell = { version = "4", optional = true }
 delight = "0.1"
 fern = { version = "0.6", features = ["colored"] }
 frame-sequence = "0.1"
 glibc_version = "0.1"
-human-panic = "1.2"
+human-panic = "2"
 lazy_static = "1.4"
 log = { version = "0.4", features = ["std"] }
 notify = "6.1"
-nsi = "0.8"
+nsi = { path = "../nsi-old" } #"0.8"
 
 [target.'cfg(windows)'.dependencies]
 rlimit = "0.10"
